@@ -5,6 +5,18 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+
+    {% if form.errors %}
+      <p>There was an error with your submission. Please correct the errors below.</p>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
     <button type="submit">Sign up</button>
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
   </form>
 {% endblock %}
