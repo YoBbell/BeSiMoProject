@@ -29,16 +29,4 @@ class SignupForm(forms.Form):
         if not email.endswith('@student.chula.ac.th'):
             raise forms.ValidationError('Email must be a valid Chula email address')
         return email
-   
-
-
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Email', max_length=100)
-    password = forms.CharField(widget=forms.PasswordInput())
-
-
-
-
-class SuccessView(TemplateView):
-    template_name = 'success.html'
 
