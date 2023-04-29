@@ -15,7 +15,7 @@ class Buyer(models.Model):
     password_again = models.CharField(max_length=255, verbose_name='Password confirmation')
 
     def clean(self):
-        if self.password and self.password_again and self.password != self.password_again:
+        if self.password != self.password_again:
             raise ValidationError('Passwords do not match')
 
         self.clean_email()
