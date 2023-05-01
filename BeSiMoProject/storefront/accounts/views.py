@@ -5,17 +5,47 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import BuyerForm
 
+# def signup(request):
+#     if request.method == 'POST':
+#         form = BuyerForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect('success')
+#     else:
+#         form = BuyerForm()
+#     return render(request, 'signup.html', {'form': form})
+
+# def signup(request):
+#     if request.method == 'POST':
+#         form = BuyerForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect('success')
+#         else:
+#             if form.cleaned_data.get('password') != form.cleaned_data.get('password_again'):
+#                 form.add_error('password_again', 'Passwords do not match')
+#     else:
+#         form = BuyerForm()
+#     return render(request, 'signup.html', {'form': form})
+
 def signup(request):
     if request.method == 'POST':
         form = BuyerForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('success')
+            if form.cleaned_data.get('password') != form.cleaned_data.get('password_again'):
+                form.add_error('password_again', 'Passwords do not match')
+            else:
+                user = form.save()
+                login(request, user)
+                return redirect('success')
     else:
         form = BuyerForm()
     return render(request, 'signup.html', {'form': form})
 
+def register(request):
+    return render(request, "register.html")
 
 
 def success(request):
