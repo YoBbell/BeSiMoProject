@@ -15,6 +15,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('success/', views.success, name='success'),
     path('login/', views.login_view, name='login'),
-    path('category_browse/', views.category_browse, name='category_browse')
+    path('category_browse/', views.category_browse, name='category_browse'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

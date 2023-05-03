@@ -76,3 +76,7 @@ def category_browse(request):
     print(f"category items: {categories}")
     return render(request, 'category_browse.html' ,{'categories': categories})
 
+
+def product_detail(request, slug, id):
+    product = Product.objects.get(id=id)
+    return render(request, 'product_detail.html', {'data': product})
