@@ -5,6 +5,8 @@ class Products(models.Model):
     price= models.IntegerField(default=0)
     category= models.ForeignKey(Category,on_delete=models.CASCADE,default=1 )
     description= models.CharField(max_length=250, default='', blank=True, null= True)
+    store = models.CharField(max_length=250, default='')
+    location = models.CharField(max_length=250, default='')
     image= models.ImageField(upload_to='uploads/products/')
 
     @staticmethod
