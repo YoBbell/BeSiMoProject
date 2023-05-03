@@ -7,7 +7,8 @@
     {% for product in products %}
       <div class="bg-white rounded-lg overflow-hidden shadow-lg flex flex-col">
         <div class="flex-1">
-          <img class="w-full h-auto" src="{% static 'images/' %}{{ product.imageURL }}" alt="{{ product.name }}">
+          <!-- <img class="w-full h-auto" src="{% static 'images/' %}{{ product.imageURL }}" alt="{{ product.name }}"> -->
+          <img class="w-full h-auto" src="{% static 'images' %}{{ product.imageURL }}" alt="{{ product.name }}">
         </div>
         <div class="p-4 flex-1 flex flex-col">
           <h2 class="text-xl font-bold mb-2">{{ product.name }}</h2>
