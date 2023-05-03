@@ -38,10 +38,13 @@
             <div class="category-item">
                 <h5 class="card-title">{{ category.name }}</h5>   
                 <img src="{% static category.image %}" alt="{{ category.name }}" class="category-image">
-                <button type="submit" class="see-more-button">See more</button>
+                <a href="{% url 'product_browse' category_id=category.id %}" class="see-more-button" >See more</a>
+                <!-- <button type="submit" class="see-more-button">See more</button> -->
             </div>
         {% endfor %} 
     </body>
 </html>
+
+
 
 

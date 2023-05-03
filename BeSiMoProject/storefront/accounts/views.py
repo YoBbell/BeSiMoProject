@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from .forms import BuyerForm
-from .models import Category
+from .models import Category, Product
 
 def signup(request):
     if request.method == 'POST':
@@ -46,3 +46,12 @@ def category_browse(request):
     print(f"category items: {categories}")
     return render(request, 'category_browse.html' ,{'categories': categories})
 
+# def product_browse(request):
+#     products = Product.objects.all()
+#     print(f"products items: {products}")
+#     return render(request, 'product_browse.html' ,{'products': products})
+
+def product_browse(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    products = Product.objects.filter(collection=category).order_by('-last_update')
+    return render(request, 'product_browse.html', {'category': category, 'products': products})
