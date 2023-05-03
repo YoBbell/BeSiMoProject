@@ -1,0 +1,31 @@
+{% block content %}
+  <h1>Seller Account</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label for="store_name">Store Name:</label>
+      <input type="text" id="store_name" name="store_name" value="{{ seller.store_name }}">
+    </div>
+    <div>
+      <label for="seller_name">Seller Name:</label>
+      <input type="text" id="seller_name" name="seller_name" value="{{ seller.seller_name }}">
+    </div>
+    <div>
+      <label for="seller_phone">Seller Phone:</label>
+      <input type="text" id="seller_phone" name="seller_phone" value="{{ seller.seller_phone }}">
+    </div>
+    <div>
+      <label for="store_address">Store Address:</label>
+      <input type="text" id="store_address" name="store_address" value="{{ seller.store_address }}">
+    </div>
+    <div>
+      <label for="store_image">Store Image:</label>
+      <input type="file" id="store_image" name="store_image">
+    </div>
+    <div>
+      <label for="qr_code">QR Code:</label>
+      <input type="file" id="qr_code" name="qr_code">
+    </div>
+    <input type="submit" value="Save Changes">
+  </form>
+{% endblock %}
