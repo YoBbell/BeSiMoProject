@@ -77,13 +77,18 @@ def category_browse(request):
     return render(request, 'category_browse.html' ,{'categories': categories})
 
 
-def product_detail(request, slug, id):
-    product = Product.objects.get(id=id)
-    return render(request, 'product_detail.html', {'data': product})
+# def product_detail(request, slug, id):
+#     product = Product.objects.get(id=id)
+#     return render(request, 'product_detail.html', {'data': product})
+
 # def product_browse(request):
 #     products = Product.objects.all()
 #     print(f"products items: {products}")
 #     return render(request, 'product_browse.html' ,{'products': products})
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'product_detail.html', {'product': product})
 
 def product_browse(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
