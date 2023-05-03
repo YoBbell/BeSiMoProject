@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 from store.models.customer import Customer
 from django.views import View
 import re
+from django.core.validators import validate_email
 
 
 class Signup (View):
@@ -62,8 +63,10 @@ class Signup (View):
             error_message = 'Password must be 5 char long'
         # elif len (customer.email) < 5:
         #     error_message = 'Email must be 5 char long',
-        elif not re.match(r'.\@.', customer.email):
-            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
+        # elif not re.match(r'.\@.', customer.email):
+        #     error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
+        elif not validate_email(customer.email):
+            error_message = 'Please enter a valid email address'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', customer.email):
             error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif customer.isExists ():
