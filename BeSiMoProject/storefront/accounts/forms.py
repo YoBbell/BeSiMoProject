@@ -16,4 +16,3 @@ class BuyerForm(forms.ModelForm):
             'password_again': forms.PasswordInput,
         }
 
-

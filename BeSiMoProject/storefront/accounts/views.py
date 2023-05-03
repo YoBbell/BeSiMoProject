@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import BuyerForm
+from .models import Category
 
 # def signup(request):
 #     if request.method == 'POST':
@@ -67,4 +68,11 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+
+
+def category_browse(request):
+    categories = Category.objects.all()
+    print(f"category items: {categories}")
+    return render(request, 'category_browse.html' ,{'categories': categories})
 
