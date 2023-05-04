@@ -61,12 +61,12 @@ class Signup (View):
             error_message = 'Phone Number must be 10 char Long'
         elif len (customer.password) < 5:
             error_message = 'Password must be 5 char long'
-        # elif len (customer.email) < 5:
-        #     error_message = 'Email must be 5 char long',
+        elif len (customer.email) < 5:
+            error_message = 'Email must be 5 char long',
         # elif not re.match(r'.\@.', customer.email):
         #     error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
-        elif not validate_email(customer.email):
-            error_message = 'Please enter a valid email address'
+        # elif not validate_email(customer.email):
+        #     error_message = 'Please enter a valid email address'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', customer.email):
             error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif customer.isExists ():
