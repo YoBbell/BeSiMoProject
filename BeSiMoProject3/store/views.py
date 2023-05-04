@@ -173,3 +173,7 @@ def signup(request):
         return render(request, 'signup.html', data)
 
     return render(request, 'signup.html')
+
+
+def start(request):
+    return render(request, 'start.html')
