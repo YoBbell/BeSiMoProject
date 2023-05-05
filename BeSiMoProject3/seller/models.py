@@ -20,8 +20,8 @@ class Seller(models.Model):
     email_regex = re.compile(r'^\d{9,11}@student\.chula\.ac\.th$')
     email = models.EmailField(unique=True)
     location = models.CharField(max_length=250, default='')
-    store_image= models.ImageField(upload_to='uploads/sellers/')
-    qr_image= models.ImageField(upload_to='uploads/sellers/')
+    store_image= models.ImageField(upload_to='uploads/seller_data/')
+    qr_image= models.ImageField(upload_to='uploads/seller_data/')
 
 
     def clean(self):
