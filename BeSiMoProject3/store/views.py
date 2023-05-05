@@ -177,3 +177,32 @@ def signup(request):
 
 def start(request):
     return render(request, 'start.html')
+
+def product_detail(request, id):
+    product = Products.objects.get(id=id)
+    return render(request, "product_detail.html", {"data": product})
+
+
+# def add_to_cart(request):
+#     if request.method == 'POST':
+#         product_id = request.POST.get('product_id')
+#         quantity = request.POST.get('quantity')
+#         product_image = request.POST.get('product_image')
+#         product_title = request.POST.get('product_title')
+#         cart = request.session.get('cart', {})
+
+#         if product_id in cart:
+#             cart[product_id]['quantity'] += int(quantity)
+#         else:
+#             cart[product_id] = {
+#                 'quantity': int(quantity),
+#                 'product_image': product_image,
+#                 'product_title': product_title
+#             }
+
+#         request.session['cart'] = cart
+#         request.session.modified = True
+
+#         return JsonResponse({'success': True})
+
+#     return JsonResponse({'success': False})
