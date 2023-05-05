@@ -7,67 +7,53 @@ from django.core.validators import validate_email
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
 
 
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, auth
+from django.contrib import messages
+from .models import Seller
 
 def sell_signup(request):
     if request.method == 'POST':
-        first_name = request.POST.get('firstname')
-        last_name = request.POST.get('lastname')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        location = request.POST.get("location")
-        store_image = request.POST.get('store_image')
-        qr_image = request.POST.get('qr_image')
-        store_name = request.POST.get('store_name')
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        store_name = request.POST['store_name']
+        password = request.POST['password']
+        phone = request.POST['phone']
+        email = request.POST['email']
+        location = request.POST['location']
+        store_image = request.FILES['store_image']
+        qr_image = request.FILES['qr_image']
 
-        error_message = None
-        # validation
-        if not store_name:
-            error_message = "Please Enter your Store Name !!"
-        elif len(store_name) < 1:
-            error_message = "Please Enter your Store Name !!"
-        elif not first_name:
-            error_message = "Please Enter your First Name !!"
-        elif len(first_name) < 3:
-            error_message = 'First Name must be 3 characters long or more'
-        elif not last_name:
-            error_message = 'Please Enter your Last Name'
-        elif len(last_name) < 3:
-            error_message = 'Last Name must be 3 characters long or more'
-        elif not phone:
-            error_message = 'Enter your Phone Number !!'
-        elif len(phone) < 10:
-            error_message = 'Phone Number must be 10 characters Long'
-        elif len(password) < 5:
-            error_message = 'Password must be 5 characters long'
-        elif len(email) < 5:
-            error_message = 'Email must be 5 characters long'
-        elif not re.match(r'^\d{9,11}\@student\.chula\.ac\.th$', email):
-            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
-        elif Seller.objects.filter(email=email).exists():
-            error_message = 'Email Address Already Registered..'
-        else:
-            seller = Seller(first_name=first_name,
-                                last_name=last_name,
-                                store_name=store_name,
-                                phone=phone,
-                                email=email,
-                                password=make_password(password),
-                                location=location,
-                                store_image=store_image,
-                                qr_image=qr_image)
-            seller.save()
-            return redirect('sell_product')
+        # create a new user
+        user = User.objects.create_user(username=email, password=password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
 
-        data = {
-            'error': error_message,
-            'values': request.POST
-        }
-        return render(request, 'sell_signup.html', data)
+        # create a new seller
+        seller = Seller.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            store_name=store_name,
+            password=password,
+            phone=phone,
+            email=email,
+            location=location,
+            store_image=store_image,
+            qr_image=qr_image,
+            created_by=user
+        )
+        seller.save()
+
+        messages.success(request, 'Your account has been created successfully!')
+        return redirect('sell_login')
 
     return render(request, 'sell_signup.html')
+
 
 
 
