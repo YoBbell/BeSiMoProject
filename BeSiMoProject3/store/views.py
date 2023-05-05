@@ -182,27 +182,13 @@ def product_detail(request, id):
     product = Products.objects.get(id=id)
     return render(request, "product_detail.html", {"data": product})
 
+def brand_list(request):
+    data=Store.objects.all().order_by('-id')
+    return render(request,'brand_list.html',{'data':data})
 
-# def add_to_cart(request):
-#     if request.method == 'POST':
-#         product_id = request.POST.get('product_id')
-#         quantity = request.POST.get('quantity')
-#         product_image = request.POST.get('product_image')
-#         product_title = request.POST.get('product_title')
-#         cart = request.session.get('cart', {})
-
-#         if product_id in cart:
-#             cart[product_id]['quantity'] += int(quantity)
-#         else:
-#             cart[product_id] = {
-#                 'quantity': int(quantity),
-#                 'product_image': product_image,
-#                 'product_title': product_title
-#             }
-
-#         request.session['cart'] = cart
-#         request.session.modified = True
-
-#         return JsonResponse({'success': True})
-
-#     return JsonResponse({'success': False})
+def brand_product_list(request,store_id):
+	store=Store.objects.get(id=store_id)
+	data=Products.objects.filter(store=store).order_by('-id')
+	return render(request,'brand_product_list.html',{
+			'data':data,
+			})

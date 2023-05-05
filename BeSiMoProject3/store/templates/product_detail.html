@@ -45,8 +45,7 @@
 			  	<input type="hidden" class="product-image-{{data.id}}" value="{{data.productattribute_set.first.image}}" />
 		          <input type="hidden" class="product-id-{{data.id}}" value="{{data.id}}" />
 		          <input type="hidden" class="product-title-{{data.id}}" value="{{data.title}}" />
-			    <button class="btn btn-primary btn-sm add-to-cart" data-index="{{data.id}}" type="button" id="addToCartBtn"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-
+			    <button class="btn btn-primary btn-sm add-to-cart" data-index="{{data.id}}" type="button" id="addToCartBtn"><i class="fa fa-shopping-cart"></i> Add to Cart</a></button>
 			  </div>
 			</div>
 
@@ -60,16 +59,16 @@
 			<table class="table table-bordered">
 				<tr>
 					<th>Brand</th>
-					<td><a href="/store/">{{data.store}}</a></td>
+					<td><a href="/brand_product_list/{{data.store.id}}">{{data.store}}</a></td>
 				</tr>
 				<tr>
 					<th>Category</th>
 					<td><a href="/?category={{data.category.id}}">{{data.category}}</a></td>
 				</tr>
-				<!-- <tr>
-					<th>Specification</th>
-					<td>{{data.specs}}</td>
-				</tr> -->
+				<tr>
+					<th>Location</th>
+					<td>{{data.location}}</td>
+				</tr>
 			</table>
 		</div>
 		<!-- Reviews -->
@@ -80,8 +79,8 @@
 				<button data-toggle="modal" data-target="#productReview" type="button" class="btn btn-warning btn-sm float-right reviewBtn">Add Review</button>
 				{% endif %}
 				{% endif %}
-			</h3>
-	{% if user.is_authenticated %}
+			</h3> 
+	{% if user.is_authenticated %} 
 	<!-- Product Review -->
 	<div class="modal fade" id="productReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
@@ -134,7 +133,7 @@
 						<p class="no-data">Add First Review</p>
 					{% endif %}
 				</div>
-			</div>
+			</div> 
 		</div>
 	</div>
 	<!-- Related Products -->
@@ -157,8 +156,8 @@
 			  </div>
 			</div>
 		</div>
-		{% endfor %} -->
-	</div>
+		{% endfor %} 
+	</div>  -->
 </main>
 <!-- Image Zoom -->
 <script src="{% static 'jquery.ez-plus.js' %}"></script>

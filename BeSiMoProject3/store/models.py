@@ -8,6 +8,7 @@ import datetime
 
 class Category(models.Model):
     name= models.CharField(max_length=50)
+    cat_image= models.ImageField(upload_to='uploads/categories/')
 
     @staticmethod
     def get_all_categories():
@@ -67,12 +68,29 @@ class Customer(models.Model):
 
         return False
     
+class Store(models.Model):
+    store_name = models.CharField(max_length=100, default='')    
+    phone_regex = RegexValidator(
+        regex=r'^(\+66|0)\d{9}$',
+        message="Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'")
+    phone = models.CharField(validators=[phone_regex], max_length=12)
+    
+    email_regex = re.compile(r'^\d{9,11}@student\.chula\.ac\.th$')
+    email = models.EmailField(unique=True)
+    location = models.CharField(max_length=250, default='')
+    store_image= models.ImageField(upload_to='uploads/store_data/')
+    qr_image= models.ImageField(upload_to='uploads/store_data/')
+
+    def __str__(self):
+        return self.store_name
+
+
 class Products(models.Model):
     name = models.CharField(max_length=60)
     price= models.IntegerField(default=0)
     category= models.ForeignKey(Category,on_delete=models.CASCADE,default=1 )
     description= models.CharField(max_length=250, default='', blank=True, null= True)
-    store = models.CharField(max_length=250, default='')
+    store = models.ForeignKey(Store,on_delete=models.CASCADE)
     location = models.CharField(max_length=250, default='')
     image= models.ImageField(upload_to='uploads/products/')
 
@@ -89,6 +107,7 @@ class Products(models.Model):
             return Products.objects.filter (category=category_id)
         else:
             return Products.get_all_products();
+
 
 class Order(models.Model):
     product = models.ForeignKey(Products,
