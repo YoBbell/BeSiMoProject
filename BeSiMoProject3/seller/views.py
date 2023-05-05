@@ -24,7 +24,11 @@ def sell_signup(request):
 
         error_message = None
         # validation
-        if not first_name:
+        if not store_name:
+            error_message = "Please Enter your Store Name !!"
+        elif len(store_name) < 1:
+            error_message = "Please Enter your Store Name !!"
+        elif not first_name:
             error_message = "Please Enter your First Name !!"
         elif len(first_name) < 3:
             error_message = 'First Name must be 3 characters long or more'
@@ -32,10 +36,6 @@ def sell_signup(request):
             error_message = 'Please Enter your Last Name'
         elif len(last_name) < 3:
             error_message = 'Last Name must be 3 characters long or more'
-        elif not store_name:
-            error_message = "Please Enter your Store Name !!"
-        # elif len(store_name) < 1:
-        #     error_message = "Store Name must be 1 character long or more"
         elif not phone:
             error_message = 'Enter your Phone Number !!'
         elif len(phone) < 10:
@@ -59,7 +59,7 @@ def sell_signup(request):
                                 store_image=store_image,
                                 qr_image=qr_image)
             seller.save()
-            return redirect('sell_login')
+            return redirect('sell_product')
 
         data = {
             'error': error_message,
@@ -68,6 +68,8 @@ def sell_signup(request):
         return render(request, 'sell_signup.html', data)
 
     return render(request, 'sell_signup.html')
+
+
 
 
 def sell_login(request):
@@ -90,22 +92,21 @@ def sell_login(request):
                 if return_url:
                     return HttpResponseRedirect(return_url)
                 else:
-                    return redirect('homepage')
+                    return redirect('sell_product')
             else:
-                error_message = 'Invalid password'
+                error_message = 'Invalid !!'
         else:
-            error_message = 'Seller not found'
+            error_message = 'Invalid !!'
 
+        print(email, password)
         return render(request, 'sell_login.html', {'error': error_message})
-
 
 def logout(request):
     request.session.clear()
     return redirect('sell_login')
 
-
 @login_required
-def seller_account(request):
+def sell_account(request):
     try:
         seller = Seller.objects.get(email=request.user.email)
     except Seller.DoesNotExist:
@@ -139,40 +140,3 @@ def seller_account(request):
     }
 
     return render(request, 'sell_account.html', context)
-
-# @login_required
-# def seller_account(request):
-#     if request.method == 'POST':
-#         # Get seller object based on user's email
-#         seller = Seller.objects.get(email=request.user.email)
-        
-#         # Update seller object with new data from form
-#         seller.first_name = request.POST['first_name']
-#         seller.last_name = request.POST['last_name']
-#         seller.phone = request.POST['phone']
-#         seller.location = request.POST['location']
-        
-#         # Check if a new profile image was uploaded
-#         if request.FILES.get('store_image'):
-#             seller.store_image = request.FILES['store_image']
-        
-#         # Check if a new QR code image was uploaded
-#         if request.FILES.get('qr_image'):
-#             seller.qr_image = request.FILES['qr_image']
-        
-#         # Save updated seller object
-#         seller.save()
-        
-#         messages.success(request, 'Your account information has been updated.')
-        
-#         return redirect('sell_account')
-        
-#     else:
-#         # Get seller object based on user's email
-#         seller = Seller.objects.get(email=request.user.email)
-        
-#         context = {
-#             'seller': seller
-#         }
-        
-#         return render(request, 'sell_account.html', context)
