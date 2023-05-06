@@ -6,7 +6,7 @@ import re
 from django.contrib.auth.models import User
 
 class Seller(models.Model):
-    created_by = models.OneToOneField(User, related_name='vendor', on_delete=models.CASCADE,)
+    created_by = models.OneToOneField(User, related_name='seller', on_delete=models.CASCADE,)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     store_name = models.CharField(max_length=100, default='')
@@ -51,6 +51,9 @@ class Seller(models.Model):
         for key, value in kwargs.items():
             setattr(self, key, value)
         self.save()
+    
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
@@ -71,7 +74,7 @@ class Category(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=50)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Seller, related_name="products", on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, related_name="products", on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     added_date = models.DateTimeField(auto_now_add=True)

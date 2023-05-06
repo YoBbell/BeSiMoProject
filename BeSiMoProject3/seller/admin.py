@@ -20,6 +20,8 @@ class SellerAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Seller)
+admin.site.register(Item)
+admin.site.register(Category)
 
 
 
