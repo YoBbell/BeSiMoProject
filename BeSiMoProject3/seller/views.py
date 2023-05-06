@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import *
+from seller.models import *
 from django.views import View
 import re
 from django.core.validators import validate_email
@@ -10,7 +10,6 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Seller, Item
 
 
 
@@ -312,39 +311,10 @@ def sell_edit_account(request):
 
 
 
-# @login_required
+
+
 def seller_admin(request):
-    # vendor = request.seller
-    # products = vendor.products.all()
-    # orders = vendor.orders.all()
-    # for order in orders:
-    #     order.vendor_amount = 0
-    #     order.vendor_paid_amount = 0
-    #     order.fully_paid = True
-
-    #     for item in order.items.all():
-    #         if item.vendor == request.user.vendor:
-    #             if item.vendor_paid:
-    #                 order.vendor_paid_amount += item.get_total_price()
-    #             else:
-    #                 order.vendor_amount += item.get_total_price()
-    #                 order.fully_paid = False
-    # return render(request, 'vendor_admin.html', {'vendor': vendor})
-
-# #--------------------------------------------
-# # queryset = Product.objects.all()
-    # queryset = Item.objects.all()
-    # for Item in queryset:
-    #     print(Item)
-    # return render(request, "vendor_admin.html", {'Item': Item})
-
-# def logout(request):
-    # request.session.clear()
-    # return redirect('vender_admin.html')
-    # return render(request, 'vendor_admin.html', {'vendor': vendor})
-
-
-    queryset = Item.objects.all()
+    queryset = Products.objects.all()
     items = []
     for item in queryset:
         items.append(item)

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import JsonResponse
 import json
 import datetime
-from .models import *
+from seller.models import *
 from django.contrib.auth.hashers import make_password,  check_password
 from django.views import  View
 from store.middlewares.auth import auth_middleware
@@ -125,11 +125,6 @@ def index(request):
 
 
 
-
-
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from .models import Customer
 
 
 # def login_user(request):
@@ -257,7 +252,6 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
 from django.utils.datastructures import MultiValueDictKeyError
-from .models import Customer
 
 def signup(request):
     if request.method == 'POST':
@@ -418,12 +412,12 @@ def product_detail(request, id):
     return render(request, "product_detail.html", {"data": product})
 
 def brand_list(request):
-    data=Store.objects.all().order_by('-id')
+    data=Seller.objects.all().order_by('-id')
     return render(request,'brand_list.html',{'data':data})
 
-def brand_product_list(request,store_id):
-	store=Store.objects.get(id=store_id)
-	data=Products.objects.filter(store=store).order_by('-id')
+def brand_product_list(request,seller_id):
+	seller=Seller.objects.get(id=seller_id)
+	data=Products.objects.filter(seller=seller).order_by('-id')
 	return render(request,'brand_product_list.html',{
 			'data':data,
 			})
