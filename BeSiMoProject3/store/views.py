@@ -10,14 +10,47 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/login/')
 def cart(request):
-    if 'cart' in request.session:
+    if request.method == "GET":
         ids = list(request.session.get('cart').keys())
         products = Products.get_products_by_id(ids)
-    else:
-        products = []
-    return render(request, 'cart.html', {'products': products})
+        return render(request, 'cart.html', {'products': products})
+    elif request.method == "POST":
+        product = request.POST.get('product')
+        remove = request.POST.get('remove')
+        cart = request.session.get('cart')
+
+        if cart:
+            quantity = cart.get(product)
+            if quantity:
+                if remove:
+                    if quantity <= 1:
+                        cart.pop(product)
+                    else:
+                        cart[product] = quantity-1
+                else:
+                    cart[product] = quantity+1
+            else:
+                cart[product] = 1
+        else:
+            cart = {}
+            cart[product] = 1
+
+        request.session['cart'] = cart
+        return redirect('cart/')
+
+
+# def cart(request):
+#     if 'cart' in request.session:
+#         ids = list(request.session.get('cart').keys())
+#         products = Products.get_products_by_id(ids)
+#     else:
+#         products = []
+#     return render(request, 'cart.html', {'products': products})
 
 
 def checkout(request):
@@ -130,7 +163,8 @@ def login_user(request):
             
         if user is not None:
             login(request, user)
-            return redirect('edit_account')
+            request.session['customer_id'] = customer.id
+            return redirect('store/')
         else:
             error = 'Invalid email or password.'
 
@@ -147,7 +181,7 @@ def login_user(request):
 
 def logout(request):
     request.session.clear()
-    return redirect('start')
+    return redirect('store')
 
 
 def orders(request):
@@ -316,3 +350,12 @@ def brand_product_list(request,store_id):
 	return render(request,'brand_product_list.html',{
 			'data':data,
 			})
+
+# def auth_middleware(get_response):
+#     def middleware(request):
+#         if not request.session.get('customer_id'):
+#             return redirect('cart/login/')
+#         response = get_response(request)
+#         return response
+#     return middleware
+

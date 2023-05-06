@@ -111,6 +111,16 @@ class Products(models.Model):
 
 
 class Order(models.Model):
+    PENDING = 'pending'
+    COMPLETED = 'completed'
+    CANCELLED = 'cancelled'
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (COMPLETED, 'Completed'),
+        (CANCELLED, 'Cancelled'),
+    ]
+
+
     product = models.ForeignKey(Products,
                                 on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer,
@@ -120,7 +130,7 @@ class Order(models.Model):
     address = models.CharField (max_length=50, default='', blank=True)
     phone = models.CharField (max_length=50, default='', blank=True)
     date = models.DateField (default=datetime.datetime.today)
-    status = models.BooleanField (default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
     def placeOrder(self):
         self.save()
