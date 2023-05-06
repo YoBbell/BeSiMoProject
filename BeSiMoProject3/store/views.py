@@ -6,6 +6,8 @@ from .models import *
 from django.contrib.auth.hashers import make_password,  check_password
 from django.views import  View
 from store.middlewares.auth import auth_middleware
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 
 def cart(request):
@@ -85,6 +87,19 @@ def index(request):
         print('you are: ', request.session.get('email'))
         return render(request, 'index.html', data)
 
+# def login(request):
+#     error = None
+#     if request.method == 'POST':
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         user = authenticate(request, username=email, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('edit_account') # เดี๋ยวมาเชื่อมอีกที
+#         else:
+#             error = 'Invalid email or password.'
+        
+#     return render(request, 'login.html', {'error': error})
 
 def login(request):
     return_url = None
@@ -127,94 +142,96 @@ def orders(request):
     return render(request, 'orders.html', {'orders': orders})
 
 
-# def signup(request):
-#     if request.method == 'POST':
-#         first_name = request.POST.get('firstname')
-#         last_name = request.POST.get('lastname')
-#         phone = request.POST.get('phone')
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-
-#         # validation
-#         error_message = None
-#         if not first_name:
-#             error_message = "Please Enter your First Name !!"
-#         elif len(first_name) < 3:
-#             error_message = 'First Name must be 3 char long or more'
-#         elif not last_name:
-#             error_message = 'Please Enter your Last Name'
-#         elif len(last_name) < 3:
-#             error_message = 'Last Name must be 3 char long or more'
-#         elif not phone:
-#             error_message = 'Enter your Phone Number'
-#         elif len(phone) < 10:
-#             error_message = 'Phone Number must be 10 char Long'
-#         elif len(password) < 5:
-#             error_message = 'Password must be 5 char long'
-#         elif len(email) < 5:
-#             error_message = 'Email must be 5 char long',
-#         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-#             error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
-#         elif Customer.objects.filter(email=email).exists():
-#             error_message = 'Email Address Already Registered..'
-#         else:
-#             customer = Customer(first_name=first_name,
-#                                 last_name=last_name,
-#                                 phone=phone,
-#                                 email=email,
-#                                 password=make_password(password))
-#             customer.save()
-#             return redirect('homepage')
-
-#         data = {
-#             'error': error_message,
-#             'values': request.POST
-#         }
-#         return render(request, 'signup.html', data)
-
-#     return render(request, 'signup.html')
-
-
 def signup(request):
     if request.method == 'POST':
-        # Get form data
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        user = request.user
+        first_name = request.POST.get('firstname')
+        last_name = request.POST.get('lastname')
+        phone = request.POST.get('phone')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        phone = request.POST.get('phone')
-        
-       
-        # Validate email format
-        email_regex = re.compile(r'^\d{9,11}@student\.chula\.ac\.th$')
-        if not email_regex.match(email):
-            raise ValidationError({'email': 'Email must be in the format: \'xxxxxxxxxx@student.chula.ac.th\''})
-        
-        # Check if email already exists
-        if User.objects.filter(email=email).exists():
-            return HttpResponse('Email already exists')
-        
-        user = User.objects.create_user(username=email, password=password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-       
-        
-        # Create Customer object
-        customer = Customer.objects.create(
-            created_by=user,
-            first_name=first_name,
-            last_name=last_name,
-            phone=phone,
-            email=email,
-            password=password
-        )
-        customer.save()
-        # Redirect to home page
-        return redirect('homepage')
-    
-    # Render signup form
+
+        # validation
+        error_message = None
+        if not first_name:
+            error_message = "Please Enter your First Name !!"
+        elif len(first_name) < 3:
+            error_message = 'First Name must be 3 char long or more'
+        elif not last_name:
+            error_message = 'Please Enter your Last Name'
+        elif len(last_name) < 3:
+            error_message = 'Last Name must be 3 char long or more'
+        elif not phone:
+            error_message = 'Enter your Phone Number'
+        elif len(phone) < 10:
+            error_message = 'Phone Number must be 10 char Long'
+        elif len(password) < 5:
+            error_message = 'Password must be 5 char long'
+        elif len(email) < 5:
+            error_message = 'Email must be 5 char long',
+        elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
+            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
+        elif Customer.objects.filter(email=email).exists():
+            error_message = 'Email Address Already Registered..'
+        else:
+            customer = Customer(created_by=user,
+                                first_name=first_name,
+                                last_name=last_name,
+                                phone=phone,
+                                email=email,
+                                password=make_password(password))
+            customer.save()
+            return redirect('homepage')
+
+        data = {
+            'error': error_message,
+            'values': request.POST
+        }
+        return render(request, 'signup.html', data)
+
     return render(request, 'signup.html')
+
+
+# def signup(request):
+#     if request.method == 'POST':
+#         # Get form data
+#         first_name = request.POST.get('first_name')
+#         last_name = request.POST.get('last_name')
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+#         phone = request.POST.get('phone')
+        
+       
+#         # Validate email format
+#         email_regex = re.compile(r'^\d{9,11}@student\.chula\.ac\.th$')
+#         if not email_regex.match(email):
+#             raise ValidationError({'email': 'Email must be in the format: \'xxxxxxxxxx@student.chula.ac.th\''})
+        
+#         # Check if email already exists
+#         if User.objects.filter(email=email).exists():
+#             return HttpResponse('Email already exists')
+        
+#         user = User.objects.create_user(username=email, password=password)
+#         user.first_name = first_name
+#         user.last_name = last_name
+#         user.save()
+       
+        
+#         # Create Customer object
+#         customer = Customer.objects.create(
+#             created_by=user,
+#             first_name=first_name,
+#             last_name=last_name,
+#             phone=phone,
+#             email=email,
+#             password=password
+#         )
+#         customer.save()
+#         # Redirect to home page
+#         return redirect('homepage')
+    
+#     # Render signup form
+#     return render(request, 'signup.html')
 
 
 def start(request):

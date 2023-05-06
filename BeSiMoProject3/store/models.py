@@ -43,7 +43,7 @@ class Customer(models.Model):
 
 
     @staticmethod
-    def get_seller_by_email(email):
+    def get_customer_by_email(email):
         try:
             return Customer.objects.get(email= email)
         except:
@@ -61,7 +61,7 @@ class Customer(models.Model):
             setattr(self, key, value)
         self.save()
     
-    
+
 # class Customer(models.Model):
 #     first_name = models.CharField(max_length=50)
 #     last_name = models.CharField (max_length=50)
