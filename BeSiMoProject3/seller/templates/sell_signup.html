@@ -1,29 +1,79 @@
 {% extends 'sell_base.html' %}
 
 {% block content %}
-  <h1>Seller Sign-Up</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" required><br><br>
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" required><br><br>
-    <label for="store_name">Store Name:</label>
-    <input type="text" id="store_name" name="store_name" required><br><br>
-    <label for="phone">Phone Number:</label>
-    <input type="text" id="phone" name="phone" required><br><br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br><br>
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location" required><br><br>
-    <label for="store_image">Store Image:</label>
-    <input type="file" id="store_image" name="store_image" accept="image/*" required><br><br>
-    <label for="qr_image">QR Image:</label>
-    <input type="file" id="qr_image" name="qr_image" accept="image/*" required><br><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
-    <label for="confirm_password">Confirm Password:</label>
-    <input type="password" id="confirm_password" name="confirm_password" required><br><br>
-    <input type="submit" value="Sign Up">
-  </form>
+  <div class="container mt-4">
+    <div class="p-3 m-3">
+      <div class="col-lg-5 rounded mx-auto border pt-4">
+        <div class="text-center col">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThOqt8obmoZ_hcXLbrwWEd40sghWU807gE5g&usqp=CAU" alt="" 
+          class="" style="height: 150px;">
+          <hr>
+        </div>
+        <h3 class="alert alert-success rounded-pill" style="text-align:center">Create an Account</h3>
+        <form action="/sell_signup/" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if error %}
+            <div class="alert alert-danger" role="alert">
+              {{ error }}
+            </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required value="{{ values.first_name }}" class="form-control form-control-sm" placeholder="">
+          </div>
+
+          <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required value="{{ values.last_name }}" class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="store_name">Store Name:</label>
+            <input type="text" id="store_name" name="store_name" required class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required value="{{ values.phone }}" class="form-control form-control-sm" placeholder="0xxxxxxxxx or +66xxxxxxxxx">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required value="{{ values.email }}" class="form-control form-control-sm" placeholder="example@example.com">
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="store_image">Store Image:</label>
+            <input type="file" id="store_image" name="store_image" accept="image/*" required class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="qr_image">QR Image:</label>
+            <input type="file" id="qr_image" name="qr_image" accept="image/*" required class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required class="form-control form-control-sm">
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required class="form-control form-control-sm">
+          </div>
+
+          <hr>
+            <button type="submit" class="btn btn-sm btn-success col-lg-12">Create an account</button>
+    
+        </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

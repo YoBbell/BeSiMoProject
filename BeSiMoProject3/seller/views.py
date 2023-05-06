@@ -4,17 +4,14 @@ from .models import *
 from django.views import View
 import re
 from django.core.validators import validate_email
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.conf import settings
-
-
-
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Seller
+
 
 def sell_signup(request):
     if request.method == 'POST':
@@ -56,73 +53,82 @@ def sell_signup(request):
 
 
 
-
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 def sell_login(request):
-    return_url = None
-    if request.method == 'GET':
-        return_url = request.GET.get('return_url')
-        return render(request, 'sell_login.html')
-
-    elif request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        seller = Seller.get_seller_by_email(email)
-        error_message = None
-
-        if seller:
-            flag = check_password(password, seller.password)
-            if flag:
-                request.session['seller'] = seller.id
-
-                if return_url:
-                    return HttpResponseRedirect(return_url)
-                else:
-                    return redirect('sell_product')
-            else:
-                error_message = 'Invalid !!'
+    error = None
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('sell_edit_account') # เดี๋ยวมาเชื่อมอีกที
         else:
-            error_message = 'Invalid !!'
+            error = 'Invalid email or password.'
+        
+    return render(request, 'sell_login.html', {'error': error})
 
-        print(email, password)
-        return render(request, 'sell_login.html', {'error': error_message})
 
-def logout(request):
+
+
+def sell_logout(request):
     request.session.clear()
-    return redirect('sell_login')
+    return redirect('start')
 
-@login_required
-def sell_account(request):
-    try:
-        seller = Seller.objects.get(email=request.user.email)
-    except Seller.DoesNotExist:
-        seller = None
 
-    if request.method == 'POST' and seller:
-        # Update seller object with new data from form
-        seller.first_name = request.POST.get('first_name', seller.first_name)
-        seller.last_name = request.POST.get('last_name', seller.last_name)
-        seller.store_name = request.POST.get('store_name', seller.store_name)
-        seller.phone = request.POST.get('phone', seller.phone)
-        seller.location = request.POST.get('location', seller.location)
 
-        # Check if a new profile image was uploaded
+
+# from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.forms import PasswordChangeForm
+# from django.contrib.auth import update_session_auth_hash
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+
+# @login_required
+# def sell_change_password(request):
+#     if request.method == 'POST':
+#         form = PasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             # update the session to prevent logging out the user
+#             update_session_auth_hash(request, user)
+#             messages.success(request, 'Your password has been changed successfully!')
+#             return redirect('homepage')
+#         else:
+#             messages.error(request, 'Please correct the errors below.')
+#     else:
+#         form = PasswordChangeForm(request.user)
+#     return render(request, 'sell_change_password.html', {'form': form})
+
+
+
+
+@login_required(login_url='sell_login/')
+def sell_edit_account(request):
+    user = request.user
+    seller = user.vendor
+
+    if request.method == 'POST':
+        # Update seller information
+        seller.first_name = request.POST.get('first_name')
+        seller.last_name = request.POST.get('last_name')
+        seller.phone = request.POST.get('phone')
+        seller.location = request.POST.get('location')
+
+        # Update seller images
         if request.FILES.get('store_image'):
-            seller.store_image = request.FILES['store_image']
-
-        # Check if a new QR code image was uploaded
+            seller.store_image = request.FILES.get('store_image')
         if request.FILES.get('qr_image'):
-            seller.qr_image = request.FILES['qr_image']
+            seller.qr_image = request.FILES.get('qr_image')
 
-        # Save updated seller object
-        seller.save()
+        try:
+            seller.save() # save the updated seller information to the database
+            messages.success(request, 'Account updated successfully.')
+        except Exception as e:
+            messages.error(request, 'Failed to update account: {}'.format(e))
 
-        messages.success(request, 'Your account information has been updated.')
+    return render(request, 'sell_edit_account.html', {'seller': request.user.vendor})
 
-        return redirect('sell_account')
-
-    context = {
-        'seller': seller
-    }
-
-    return render(request, 'sell_account.html', context)

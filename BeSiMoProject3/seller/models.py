@@ -46,3 +46,8 @@ class Seller(models.Model):
             return True
 
         return False
+    
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.save()

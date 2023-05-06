@@ -129,7 +129,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads', 'seller_data')
 
 
 
-
 MEDIA_ROOT = BASE_DIR
 
 
