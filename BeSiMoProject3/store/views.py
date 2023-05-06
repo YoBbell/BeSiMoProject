@@ -157,77 +157,56 @@ def orders(request):
     return render(request, 'orders.html', {'orders': orders})
 
 
-def signup(request):
-    if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        password = request.POST['password']
-        phone = request.POST['phone']
-        email = request.POST['email']
-       
-
-        # create a new user
-        user = User.objects.create_user(username=email, password=password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-
-        # create a new customer
-        customer = Customer.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            password=password,
-            phone=phone,
-            email=email,
-            created_by=user
-        )
-        customer.save()
-
-        messages.success(request, 'Your account has been created successfully!')
-        return redirect('login')
-
-    return render(request, 'signup.html')
+# from django.contrib.auth.models import User
+# from django.core.exceptions import ValidationError
+# from django.core.validators import RegexValidator
+# from django.shortcuts import render, redirect
+# from django.contrib.auth.hashers import make_password
+# from .models import Customer
 
 # def signup(request):
 #     if request.method == 'POST':
-#         user = request.user
-#         first_name = request.POST.get('firstname')
-#         last_name = request.POST.get('lastname')
+#         first_name = request.POST.get('first_name')
+#         last_name = request.POST.get('last_name')
 #         phone = request.POST.get('phone')
 #         email = request.POST.get('email')
 #         password = request.POST.get('password')
 
-#         # validation
+#         # Perform validation
 #         error_message = None
 #         if not first_name:
-#             error_message = "Please Enter your First Name !!"
+#             error_message = "Please enter your first name"
 #         elif len(first_name) < 3:
-#             error_message = 'First Name must be 3 char long or more'
+#             error_message = "First name must be at least 3 characters long"
 #         elif not last_name:
-#             error_message = 'Please Enter your Last Name'
+#             error_message = "Please enter your last name"
 #         elif len(last_name) < 3:
-#             error_message = 'Last Name must be 3 char long or more'
+#             error_message = "Last name must be at least 3 characters long"
 #         elif not phone:
-#             error_message = 'Enter your Phone Number'
-#         elif len(phone) < 10:
-#             error_message = 'Phone Number must be 10 char Long'
+#             error_message = "Please enter your phone number"
+#         elif not re.match(r'^(\+66|0)\d{9}$', phone):
+#             error_message = "Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
+#         elif not email:
+#             error_message = "Please enter your email address"
+#         elif not re.match(r'^\d{9,11}@student\.chula\.ac\.th$', email):
+#             error_message = "Email must be in the format: 6xxxxxxxxx@student.chula.ac.th"
 #         elif len(password) < 5:
-#             error_message = 'Password must be 5 char long'
-#         elif len(email) < 5:
-#             error_message = 'Email must be 5 char long',
-#         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-#             error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
-#         elif Customer.objects.filter(email=email).exists():
-#             error_message = 'Email Address Already Registered..'
+#             error_message = "Password must be at least 5 characters long"
 #         else:
-#             customer = Customer(created_by=user,
-#                                 first_name=first_name,
-#                                 last_name=last_name,
-#                                 phone=phone,
-#                                 email=email,
-#                                 password=make_password(password))
-#             customer.save()
-#             return redirect('homepage')
+#             try:
+#                 # Create new user
+#                 user = User.objects.create_user(username=email, password=password)
+#                 user.first_name = first_name
+#                 user.last_name = last_name
+#                 user.save()
+
+#                 # Create new customer
+#                 customer = Customer(created_by=user, first_name=first_name, last_name=last_name, phone=phone, email=email, password=make_password(password))
+#                 customer.save()
+
+#                 return redirect('homepage')
+#             except ValidationError as e:
+#                 error_message = e.message
 
 #         data = {
 #             'error': error_message,
@@ -236,6 +215,85 @@ def signup(request):
 #         return render(request, 'signup.html', data)
 
 #     return render(request, 'signup.html')
+
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.core.validators import RegexValidator
+from django.db import IntegrityError
+from django.shortcuts import render, redirect
+
+from django.utils.datastructures import MultiValueDictKeyError
+from .models import Customer
+
+def signup(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+
+        try:
+            password_confirm = request.POST['password_confirm']
+        except MultiValueDictKeyError:
+            error_message = 'Please confirm your password'
+            data = {
+                'error': error_message,
+                'values': request.POST
+            }
+            return render(request, 'sell_signup.html', data)
+        # Validate input
+        error_message = None
+        if not password_confirm:
+            error_message = 'Please confirm your password'
+        elif password != password_confirm:
+            error_message = 'Passwords do not match'
+        elif len(first_name) < 3:
+            error_message = 'First Name must be 3 char long or more'
+        elif len(last_name) < 3:
+            error_message = 'Last Name must be 3 char long or more'
+        elif len(phone) < 10:
+            error_message = 'Phone Number must be 10 char Long'
+        elif not re.match(r'^(\+66|0)\d{9}$',phone):
+            error_message ="Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
+        elif len(password) < 5:
+            error_message = 'Password must be 5 char long'
+        elif len(email) < 5:
+            error_message = 'Email must be 5 char long'
+        elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
+            error_message = 'Email must be in the format: xxxxxxxxxx@student.chula.ac.th'
+        elif Customer.objects.filter(email=email).exists():
+            error_message = 'Email Address Already Registered..'
+        elif User.objects.filter(username=email).exists():
+            error_message = 'Username (email) already exists.'
+        else:
+            # Create user
+            user = User(username=email, password=make_password(password))
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+            # Create customer
+            customer = Customer.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=password,
+                    phone=phone,
+                    email=email,
+                    created_by=user )
+            customer.save()
+
+            return redirect('login')
+
+        data = {
+            'error': error_message,
+            'values': request.POST
+        }
+        return render(request, 'signup.html', data)
+
+    return render(request, 'signup.html')
+
 
 
 from django.contrib.auth.decorators import login_required
@@ -281,21 +339,40 @@ def edit_account(request):
         customer.last_name = request.POST.get('last_name')
         customer.phone = request.POST.get('phone')
         customer.email = request.POST.get('email')
-
-        # Update customer images
-
-        try:
-            customer.save() # save the updated customer information to the database
+        
+        # Validate input
+        error_message = None
+        if len(customer.first_name) < 3:
+            error_message = 'First Name must be 3 char long or more'
+        elif len(customer.last_name) < 3:
+            error_message = 'Last Name must be 3 char long or more'
+        elif len(customer.phone) < 10:
+            error_message = 'Phone Number must be 10 char Long'
+        elif not re.match(r'^(\+66|0)\d{9}$', customer.phone):
+            error_message = "Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
+        elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', customer.email):
+            error_message = "Email must be in the format 'XXXXXXXXXX@student.chula.ac.th'"
+        elif Customer.objects.filter(email=customer.email).exclude(id=customer.id).exists():
+            error_message = 'Email Address Already Registered..'
             
-            # update email of associated User object
-            user.email = request.POST.get('email')
-            user.save()
-            
-            messages.success(request, 'Account updated successfully.')
-        except Exception as e:
-            messages.error(request, 'Failed to update account: {}'.format(e))
+        if error_message:
+            messages.error(request, error_message)
+        else:
+            # Update customer images
+            try:
+                customer.save() # save the updated customer information to the database
+                
+                # update email of associated User object
+                user.email = customer.email
+                user.save()
+                
+                messages.success(request, 'Account updated successfully.')
+            except Exception as e:
+                messages.error(request, 'Failed to update account: {}'.format(e))
 
-    return render(request, 'edit_account.html', {'customer': request.user.customer})
+    return render(request, 'edit_account.html', {'customer': customer})
+
+
 
 
 
