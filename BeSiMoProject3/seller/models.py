@@ -51,3 +51,35 @@ class Seller(models.Model):
         for key, value in kwargs.items():
             setattr(self, key, value)
         self.save()
+
+
+class Category(models.Model):
+    name= models.CharField(max_length=50)
+
+    @staticmethod
+    def get_all_categories():
+        return Category.objects.all()
+
+    def __str__(self):
+        return self.name
+
+    # ordering = models.IntegerField(default=0)
+
+    # class Meta:
+    #     ordering = ['ordering']
+#-----------------------------------------------
+class Item(models.Model):
+    title = models.CharField(max_length=50)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Seller, related_name="products", on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    added_date = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True) # Change uploads to thumbnails 
+
+    class Meta:
+        ordering = ['-added_date']
+
+    def __str__(self):
+        return self.title
