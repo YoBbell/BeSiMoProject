@@ -53,7 +53,7 @@ class Seller(models.Model):
         self.save()
     
     def __str__(self):
-        return self.name
+        return self.store_name
 
 
 class Category(models.Model):

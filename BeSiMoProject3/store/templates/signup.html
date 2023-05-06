@@ -30,7 +30,7 @@
                 <!-- firstname -->
                 <div class="form-group">
                     <label for="">First Name</label>
-                    <input type="text" name="firstname"
+                    <input type="text" name="first_name"
                      id="" value="{{values.first_name}}" class="form-control form-control-sm" 
                      placeholder="">
                 </div>
@@ -38,7 +38,7 @@
                 <!-- last name -->
                 <div class="form-group">
                     <label for="">Last Name</label>
-                    <input type="text" name="lastname" 
+                    <input type="text" name="last_name" 
                     id="" value="{{values.last_name}}" class="form-control form-control-sm"
                     >
                 </div>
@@ -69,6 +69,11 @@
                     id=""
                      class="form-control form-control-sm">
                 </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required class="form-control form-control-sm">
+                  </div>
 
                 <!--Checkme button-->
                 <!-- <div class="mb-3 form-check">
