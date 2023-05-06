@@ -99,20 +99,44 @@ from django.shortcuts import render, redirect
 from .models import Customer
 
 
+# def login_user(request):
+#     error = None
+#     if request.method == 'POST':
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         user = authenticate(request, username=email, password=password)
+#         if user is not None:
+#             login(request, user)
+
+#             return redirect('edit_account/') # Change this to the correct URL for the edit account page
+#         else:
+#             error = 'Invalid email or password.'
+
+#     return render(request, 'login.html', {'error': error})
+
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+
 def login_user(request):
     error = None
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=email, password=password)
+        try:
+            customer = Customer.objects.get(email=email)
+            user = authenticate(request, username=customer.created_by.username, password=password)
+        except Customer.DoesNotExist:
+            user = None
+            
         if user is not None:
             login(request, user)
-
-            return redirect('edit_account/') # Change this to the correct URL for the edit account page
+            return redirect('edit_account')
         else:
             error = 'Invalid email or password.'
 
     return render(request, 'login.html', {'error': error})
+
+
 
 
 
@@ -219,6 +243,33 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+# @login_required(login_url='/login/')
+# def edit_account(request):
+#     user = request.user
+#     customer = user.customer
+
+#     if request.method == 'POST':
+#         # Update customer information
+#         customer.first_name = request.POST.get('first_name')
+#         customer.last_name = request.POST.get('last_name')
+#         customer.phone = request.POST.get('phone')
+#         customer.email = request.POST.get('email')
+
+#         # Update customer images
+
+#         try:
+#             customer.save() # save the updated customer information to the database
+#             messages.success(request, 'Account updated successfully.')
+#         except Exception as e:
+#             messages.error(request, 'Failed to update account: {}'.format(e))
+
+#     else:
+#         if not request.user.is_authenticated:
+#             return redirect('login/') # redirect the user to the login page if they are not authenticated
+
+#     return render(request, 'edit_account.html', {'customer': request.user.customer})
+
+
 @login_required(login_url='/login/')
 def edit_account(request):
     user = request.user
@@ -235,17 +286,16 @@ def edit_account(request):
 
         try:
             customer.save() # save the updated customer information to the database
+            
+            # update email of associated User object
+            user.email = request.POST.get('email')
+            user.save()
+            
             messages.success(request, 'Account updated successfully.')
         except Exception as e:
             messages.error(request, 'Failed to update account: {}'.format(e))
 
-    else:
-        if not request.user.is_authenticated:
-            return redirect('login/') # redirect the user to the login page if they are not authenticated
-
     return render(request, 'edit_account.html', {'customer': request.user.customer})
-
-
 
 
 
