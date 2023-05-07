@@ -1,0 +1,11 @@
+{% extends 'sell_base.html' %}
+
+{% block title %}Delete Product{% endblock title %}
+
+{% block content %}
+<td>
+    <form action="{% url 'sell_delete_product' product.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+</td>

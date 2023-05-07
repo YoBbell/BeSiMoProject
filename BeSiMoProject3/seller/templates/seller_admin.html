@@ -19,6 +19,8 @@
                         <th>Price</th>
                         <th>Category</th>
                         <th>Stock</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,8 +33,15 @@
                         <td>{{product.price}}</td>
                         <td>{{product.category}}</td>
                         <td>{{product.stockqty}}</td>
+                        <td><a href="{% url 'sell_edit_product' product.id %}" class="btn btn-outline-primary">Edit</a></td>
+                        <td>
+                            <form action="{% url 'sell_delete_product' product.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
                     </tr>
-
+                        
                     {% endfor %}
                 
                 </tbody>

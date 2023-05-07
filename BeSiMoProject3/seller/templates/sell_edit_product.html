@@ -1,0 +1,34 @@
+{% extends 'sell_base.html' %}
+
+{% block title %}Edit Product{% endblock title %}
+
+{% block content %}
+
+    <h1 class="title">Edit Product</h1>
+
+    <form method="POST" action="{% url 'sell_edit_product' product.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ product.name }}">
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" name="price" id="price" class="form-control" value="{{ product.price }}">
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select name="category" id="category" class="form-control">
+                {% for category in categories %}
+                <option value="{{ category.name }}" {% if category.name == product.category.name %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="stockqty">Stock Quantity:</label>
+            <input type="number" name="stockqty" id="stockqty" class="form-control" value="{{ product.stockqty }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+
+{% endblock content %}
