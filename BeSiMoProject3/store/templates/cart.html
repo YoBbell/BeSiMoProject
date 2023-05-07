@@ -45,7 +45,7 @@
         </table>
         <hr>
         <div class="m-3 p-3">
-            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-success border rounded  col-lg-3 float-right">Check out</a>
+            <a href="orders" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-success border rounded  col-lg-3 float-right">Check out</a>
         </div>
    </div>
 </div>
@@ -71,13 +71,16 @@
             <form action="/check-out/" method="POST">
                 {% csrf_token %}
                 <div class="form-group">
+                  <label for="">Receiver Name</label>
+                  <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                </div>
+                <div class="form-group">
                   <label for="">Address</label>
                   <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
-                  
                 </div>
                 <div class="form-group">
                     <label for="">Phone</label>
-                    <input type="text" name="phone" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                    <input type="text" name="phone" id="" class="form-control" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId">
                   </div>
 
                   <input type="submit" class="btn float-right btn-outline-success col-lg-6" value="Check out">

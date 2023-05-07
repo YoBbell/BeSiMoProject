@@ -59,7 +59,7 @@
 			<table class="table table-bordered">
 				<tr>
 					<th>Brand</th>
-					<td><a href="/brand_product_list/{{data.store.id}}">{{data.store}}</a></td>
+					<td><a href="/brand_product_list/{{data.seller.id}}">{{data.seller}}</a></td>
 				</tr>
 				<tr>
 					<th>Category</th>
@@ -92,7 +92,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	      	<form method="post" id="addForm" action="{% url 'save-review' data.id %}">
+	      	<form method="post" id="addForm" action="{% url 'save_review' data.id %}">
 	      		{% csrf_token %}
 		      	<table class="table table-bordered">
 		      		{{reviewForm.as_table}}
@@ -134,8 +134,8 @@
 					{% endif %}
 				</div>
 			</div> 
-		</div>
-	</div>
+		</div> 
+	</div> 
 	<!-- Related Products -->
 	<!-- <h3 class="mt-4 mb-3 border-bottom pb-1">Related Products</h3>
 	<div class="row">
