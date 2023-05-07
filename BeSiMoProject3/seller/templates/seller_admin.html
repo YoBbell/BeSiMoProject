@@ -17,8 +17,8 @@
                         <th>Image</th>
                         <th>Product</th>
                         <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
+                        <th>Category</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,6 +29,8 @@
                         <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
                         <td>{{product.name}}</td>
                         <td>{{product.price}}</td>
+                        <td>{{product.category}}</td>
+                        <td>{{product.stockqty}}</td>
                     </tr>
 
                     {% endfor %}

@@ -78,7 +78,7 @@ class Products(models.Model):
     seller = models.ForeignKey(Seller, related_name='products', on_delete=models.CASCADE)
     added_date = models.DateTimeField(auto_now_add=True)
     image= models.ImageField(upload_to='uploads/products/')
-    stockqty = models.IntegerField(default=0)
+    stockqty = models.IntegerField(default=999)
 
     class Meta:
         ordering = ['-added_date']

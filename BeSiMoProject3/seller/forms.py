@@ -6,7 +6,7 @@ from .models import *
 class ProductForm(ModelForm):
     class Meta:
         model = Products
-        fields = [ 'category','name', 'description', 'price', 'image']
+        fields = [ 'category','name', 'description', 'price', 'image', 'stockqty']
 
 #----------------------------------------
 from django import forms
