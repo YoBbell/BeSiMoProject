@@ -1,12 +1,12 @@
 from django.forms import ModelForm, models
 
-from .models import Item
+from .models import *
 
 
 class ProductForm(ModelForm):
     class Meta:
-        model = Item
-        fields = ['category', 'image', 'title', 'description', 'price']
+        model = Products
+        fields = [ 'category','name', 'description', 'price', 'image']
 
 #----------------------------------------
 from django import forms

@@ -10,6 +10,9 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from .forms import ProductForm
+from django.utils.text import slugify
+
 
 
 
@@ -182,7 +185,7 @@ def sell_login(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('sell_edit_account') # เดี๋ยวมาเชื่อมอีกที
+            return redirect('seller_admin') # เดี๋ยวมาเชื่อมอีกที
         else:
             error = 'Invalid email or password.'
         
@@ -311,11 +314,30 @@ def sell_edit_account(request):
 
 
 
-
-
+@login_required
 def seller_admin(request):
-    queryset = Products.objects.all()
-    items = []
-    for item in queryset:
-        items.append(item)
-    return render(request, "seller_admin.html", {'items': items})
+    # products = Products.objects.filter(seller=request.user.seller)
+    # return render(request, 'seller_admin.html', {'products': products})
+    seller = request.user.seller
+    products = seller.products.all()
+    return render(request, 'seller_admin.html', {'seller': seller, 'products': products})
+
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            product = form.save(commit=False) # Because we have not given vendor yet
+            product.seller = request.user.seller
+            product.slug = slugify(product.name)
+            product.save() #finally save
+
+            return redirect('seller_admin')
+
+    else:
+        form = ProductForm
+
+    return render(request, 'add_product.html', {'form': form})
+

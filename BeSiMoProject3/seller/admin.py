@@ -4,7 +4,7 @@ from django.utils.html import format_html
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'category', 'seller', 'image_tag']
+    list_display = ['name', 'price', 'category','description', 'seller', 'image_tag']
 
     def image_tag(self, obj):
         return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />'.format(obj.image.url))

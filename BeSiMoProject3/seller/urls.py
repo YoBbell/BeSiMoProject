@@ -10,8 +10,8 @@ urlpatterns = [
     path('sell_edit_account/', views.sell_edit_account, name='sell_edit_account'),
     # path('sell_change_password/', views.sell_change_password, name='sell_change_password'),
     path('sell_logout/', views.sell_logout, name='sell_logout'),
-    path('seller_admin', views.seller_admin, name="seller_admin"),
-    # path('add-product/', views.add_product, name="add-product"),
+    path('seller_admin/', views.seller_admin, name="seller_admin"),
+    path('seller_admin/add_product/', views.add_product, name="add_product"),
 
     # path('sell_product/', views.sell_product, name='sell_product'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
