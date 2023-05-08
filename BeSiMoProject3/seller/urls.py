@@ -12,6 +12,8 @@ urlpatterns = [
     path('sell_logout/', views.sell_logout, name='sell_logout'),
     path('seller_admin/', views.seller_admin, name="seller_admin"),
     path('seller_admin/add_product/', views.add_product, name="add_product"),
+    path('seller_admin/sell_edit_product/<int:product_id>', views.sell_edit_product, name="sell_edit_product"),
+    path('sell_delete_product/<int:product_id>', views.sell_delete_product, name='sell_delete_product')
 
     # path('sell_product/', views.sell_product, name='sell_product'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

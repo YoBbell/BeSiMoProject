@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from django.contrib.auth.hashers import make_password,  check_password
 from seller.models import *
 from django.views import View
@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ProductForm
 from django.utils.text import slugify
-
+from .models import Products
 
 
 
@@ -340,4 +340,92 @@ def add_product(request):
         form = ProductForm
 
     return render(request, 'add_product.html', {'form': form})
+
+
+
+# def sell_edit_product(request, product_id):
+#     product = get_object_or_404(Products, pk=product_id)
+#     if request.method == 'POST':
+#         # Update the product object with the data submitted in the form
+#         product.name = request.POST['name']
+#         product.price = request.POST['price']
+#         product.category = request.POST['category']
+#         product.stockqty = request.POST['stockqty']
+#         product.save()
+#         # Redirect to the seller admin page
+#         return redirect('seller_admin')
+#     else:
+#         # Render the edit product form with the product object
+#         return render(request, 'sell_edit_product.html', {'product': product})
+
+
+# from django.shortcuts import get_object_or_404, redirect, render
+# from .models import Category, Products
+
+# def sell_edit_product(request, product_id):
+#     # Retrieve the product instance with the given ID
+#     product = get_object_or_404(Products, pk=product_id)
+#     if request.method == 'POST':
+#         # Retrieve the category instance with the given name from the database
+#         category_name = request.POST['category']
+#         category = get_object_or_404(Category, name=category_name)
+#         # Update the product object with the data submitted in the form
+#         product.name = request.POST['name']
+#         product.price = request.POST['price']
+#         product.category = category
+#         product.stockqty = request.POST['stockqty']
+#         product.save()
+#         # Redirect to the seller admin page
+#         return redirect('seller_admin')
+#     else:
+#         # Render the edit product form with the product object
+#         return render(request, 'sell_edit_product.html', {'product': product})
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Category, Products
+
+def sell_edit_product(request, product_id):
+    # Retrieve the product instance with the given ID
+    product = get_object_or_404(Products, pk=product_id)
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        # Retrieve the category instance with the given name from the database
+        category_name = request.POST['category']
+        category = get_object_or_404(Category, name=category_name)
+        # Update the product object with the data submitted in the form
+        product.name = request.POST['name']
+        product.price = request.POST['price']
+        product.category = category
+        product.stockqty = request.POST['stockqty']
+        product.save()
+        # Redirect to the seller admin page
+        return redirect('seller_admin')
+    else:
+        # Render the edit product form with the product object and categories
+        return render(request, 'sell_edit_product.html', {'product': product, 'categories': categories})
+
+
+# def sell_delete_product(request, product_id):
+#     # Retrieve the product instance with the given ID
+#     product = get_object_or_404(Products, pk=product_id)
+#     # Delete the product from the database
+#     product.delete()
+#     # Redirect back to the seller admin page
+#     return redirect('seller_admin')
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Category, Products
+
+def sell_delete_product(request, product_id):
+    # Retrieve the product instance with the given ID
+    product = get_object_or_404(Products, pk=product_id)
+    if request.method == 'POST':
+        # Delete the product object from the database
+        product.delete()
+        # Redirect to the seller admin page
+        return redirect('seller_admin')
+    else:
+        # Render the delete product confirmation page
+        return render(request, 'sell_delete_product.html', {'product': product})
+
 
