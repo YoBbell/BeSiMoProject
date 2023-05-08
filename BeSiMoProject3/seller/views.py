@@ -319,11 +319,10 @@ def sell_edit_account(request):
 
 @login_required
 def seller_admin(request):
-    # products = Products.objects.filter(seller=request.user.seller)
-    # return render(request, 'seller_admin.html', {'products': products})
     seller = request.user.seller
     products = seller.products.all()
-    return render(request, 'seller_admin.html', {'seller': seller, 'products': products})
+    categories = Category.get_all_categories()
+    return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
 
 
 @login_required
@@ -431,4 +430,78 @@ def sell_delete_product(request, product_id):
         # Render the delete product confirmation page
         return render(request, 'sell_delete_product.html', {'product': product})
 
+def sell_product_by_category(request, category_id):
+    seller = request.user.seller
+    category = get_object_or_404(Category, id=category_id)
+    products = Products.objects.filter(seller=seller, category=category)
+
+    context = {
+        'user': request.user,
+        'seller': seller,
+        'products': products,
+        'categories': Category.get_all_categories(),
+        'selected_category': category,
+    }
+    return render(request, 'seller_admin.html', context)
+
+@login_required
+def add_product_by_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            product = form.save(commit=False) # Because we have not given vendor yet
+            product.seller = request.user.seller
+            product.category = category
+            product.slug = slugify(product.name)
+            product.save() #finally save
+
+            return redirect('seller_admin')
+            # return redirect('seller_admin', category_id)
+
+    else:
+        form = ProductForm
+
+        return render(request, 'add_product.html', {'form': form, 'category': category})
+
+
+# ------------------------------------------------------------
+def seller_payment(request, orderitem_id):
+    # Get the current order item
+    orderitem = OrderItem.objects.get(pk=orderitem_id)
+    customer = orderitem.order.customer
+
+    if request.method == 'POST':
+        # Process payment and create Payment object
+        receipt = request.FILES.get('receipt')
+        if not receipt:
+            messages.error(request, 'Please upload a payment receipt')
+            return redirect('buyer_payment', orderitem_id=orderitem_id)
+        payment = Payment.objects.create(orderitem=orderitem, receipt=receipt)
+
+        # Update order status to completed
+        orderitem.order.status = Order.COMPLETED
+        orderitem.order.save()
+
+        messages.success(request, 'Payment confirmed. Thank you for your purchase!')
+        return redirect('homepage')
+
+    # Render template with seller, customer, and order info
+    context = {
+        'seller_name': orderitem.product.seller.store_name,
+        'seller_location': orderitem.product.seller.location,
+        'seller_qr_image': orderitem.product.seller.qr_image,
+
+        'customer_first_name': orderitem.order.customer.first_name,
+        'customer_last_name': orderitem.order.customer.last_name,
+        'customer_phone': orderitem.order.customer.phone,
+
+        'order_item_product_name': orderitem.product.name,
+        'order_item_quantity': orderitem.quantity,
+        'order_item_price': orderitem.product.price,
+        'order_item_total_price': orderitem.get_total_price()
+        
+    }
+    return render(request, 'seller_payment.html', context)
 
