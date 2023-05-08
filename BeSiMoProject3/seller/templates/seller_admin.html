@@ -4,11 +4,28 @@
 
 {% block content %}
 
-    <h1 class="title">Seller Admin - <span class="is-capitalized">{{user.seller.store_name}}</span></h1>
+    <h1 class="title"> Seller Admin - <span class="is-capitalized">{{user.seller.store_name}}</span></h1>
 
     <div class="box">
     <div class="border rounded p-4 m-4">
             <h2 class="is-size-3 mb-4">My Products</h2>
+
+            <div class="buttons are-medium has-addons">
+                <a href="{% url 'seller_admin' %}" class="button is-primary{% if not category %} is-active{% endif %}">
+                  <span class="btn btn-outline-success icon is-small"><i class="btn btn-outline-success fas fa-th-list"></i>  All Products </span>
+                  
+                </a>
+                {% for category in categories %}
+                  {% if category.products.all %}
+                    <a href="{% url 'sell_product_by_category' category.id %}" class="button is-primary">
+                      <span class="btn btn-outline-success icon is-small"><i class="btn btn-outline-success fas fa-tag"></i>  {{ category.name }} </span>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              
+            
+
             <hr>
             <table class="table">
                 <thead>
@@ -24,26 +41,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
                     {% for product in products %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
-                        <td>{{product.name}}</td>
-                        <td>{{product.price}}</td>
-                        <td>{{product.category}}</td>
-                        <td>{{product.stockqty}}</td>
-                        <td><a href="{% url 'sell_edit_product' product.id %}" class="btn btn-outline-primary">Edit</a></td>
-                        <td>
-                            <form action="{% url 'sell_delete_product' product.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                        
+                    {% if not category or product.category == category %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.price}}</td>
+                            <td>{{product.category}}</td>
+                            <td>{{product.stockqty}}</td>
+                            <td><a href="{% url 'sell_edit_product' product.id %}" class="btn btn-outline-primary">Edit</a></td>
+                            <td>
+                                <form action="{% url 'sell_delete_product' product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
                     {% endfor %}
-                
                 </tbody>
 
             </table>
