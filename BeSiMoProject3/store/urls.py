@@ -20,5 +20,6 @@ urlpatterns = [
     path('brand_list/', views.brand_list, name="brand_list"),
     path('brand_product_list/<int:seller_id>', views.brand_product_list, name="brand_product_list"),
     path('edit_account/', views.edit_account, name='edit_account'),
+    # path('login/edit_account/', views.edit_account, name='edit_account'),
     path('save_review/<int:id>', views.save_review, name='save_review'),
 ]
