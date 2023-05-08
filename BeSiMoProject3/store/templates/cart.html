@@ -50,11 +50,11 @@
    </div>
 </div>
 
-
+{% endblock %} 
 <!-- modal -->
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -72,16 +72,16 @@
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="">Receiver Name</label>
-                  <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                  <input type="text" name="receiver_name" id="" class="form-control" value="{{ request.user.customer.first_name }} {{ request.user.customer.last_name }}" placeholder="" aria-describedby="helpId">
                 </div>
                 <div class="form-group">
                   <label for="">Address</label>
-                  <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                  <input type="text" name="address" id="" class="form-control" value="{{ request.user.customer.address }}" placeholder="" aria-describedby="helpId">
                 </div>
                 <div class="form-group">
                     <label for="">Phone</label>
-                    <input type="text" name="phone" id="" class="form-control" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId">
-                  </div>
+                    <input type="text" name="phone" id="" class="form-control" value="{{ request.user.customer.phone }}" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId">
+                </div>
 
                   <input type="submit" class="btn float-right btn-outline-success col-lg-6" value="Check out">
             </form>
@@ -94,4 +94,3 @@
 
 
 
-{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Confirm Payment</h1>
+  <p>Please upload a payment receipt to confirm your purchase of:</p>
+  <ul>
+    <li>{{ order_item_quantity }} x {{ order_item_product_name }} at {{ order_item_price }} each</li>
+    <li>Total price: {{ order_item_total_price }}</li>
+  </ul>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="receipt">Payment receipt:</label>
+      <input type="file" name="receipt" id="receipt" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Payment</button>
+  </form>
+
+  <hr>
+
+  <h2>Order Details</h2>
+  <h3>Seller Information</h3>
+  <p>Name: {{ seller_name }}</p>
+  <p>Location: {{ seller_location }}</p>
+  <img src="{{ seller_qr_image.url }}" alt="QR Code for {{ seller_name }}">
+
+  <h3>Customer Information</h3>
+  <p>Name: {{ customer_first_name }} {{ customer_last_name }}</p>
+  <p>Phone: {{ customer_phone }}</p>
+  <p>Address</p>
+{% endblock %}

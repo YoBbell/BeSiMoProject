@@ -22,4 +22,5 @@ urlpatterns = [
     path('edit_account/', views.edit_account, name='edit_account'),
     # path('login/edit_account/', views.edit_account, name='edit_account'),
     path('save_review/<int:id>', views.save_review, name='save_review'),
+    path('buyer_payment/<int:orderitem_id>', views.buyer_payment, name='buyer_payment')
 ]
