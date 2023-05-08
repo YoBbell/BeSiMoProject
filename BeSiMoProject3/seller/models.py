@@ -83,12 +83,19 @@ class Products(models.Model):
     class Meta:
         ordering = ['-added_date']
 
+    # @staticmethod
+    # def get_products_by_id(ids):
+    #     if ids:
+    #         return Products.objects.filter(id__in=ids)
+    #     else:
+    #         return []
+
     @staticmethod
-    def get_products_by_id(ids):
-        if ids:
-            return Products.objects.filter(id__in=ids)
+    def get_products_by_id(id):
+        if not id:
+            return Products.objects.none()
         else:
-            return []
+            return Products.objects.filter(id__in=id)
 
     @staticmethod
     def get_all_products():
