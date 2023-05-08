@@ -562,6 +562,9 @@ def buyer_payment(request, orderitem_id):
         orderitem.order.address = address
         orderitem.order.zipcode = zipcode
 
+
+        # Update order status to completed
+        orderitem.order.status = Order.IN_PROCESS
         orderitem.order.save()
 
 

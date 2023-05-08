@@ -62,10 +62,13 @@ class Customer(models.Model):
 
 class Order(models.Model):
     PENDING = 'pending'
+    IN_PROCESS = 'in_process'
     COMPLETED = 'completed'
     CANCELLED = 'cancelled'
+
     STATUS_CHOICES = [
         (PENDING, 'Pending'),
+        (IN_PROCESS, 'In_process'),
         (COMPLETED, 'Completed'),
         (CANCELLED, 'Cancelled'),
     ]

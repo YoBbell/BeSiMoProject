@@ -41,6 +41,8 @@
                     {% endif %} -->
                     {% if orderitem.order.status == 'completed' %}
                     <td><small class="badge badge-success">Completed</small></td>
+                    {% elif orderitem.order.status == 'in_process' %}
+                    <td><small class="badge badge-danger">In_process</small></td>
                     {% elif orderitem.order.status == 'cancelled' %}
                     <td><small class="badge badge-danger">Cancelled</small></td>
                     {% else %}
