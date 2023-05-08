@@ -45,8 +45,19 @@
 			  	<input type="hidden" class="product-image-{{data.id}}" value="{{data.productattribute_set.first.image}}" />
 		          <input type="hidden" class="product-id-{{data.id}}" value="{{data.id}}" />
 		          <input type="hidden" class="product-title-{{data.id}}" value="{{data.title}}" />
-			    <button class="btn btn-primary btn-sm add-to-cart" data-index="{{data.id}}" type="button" id="addToCartBtn"><i class="fa fa-shopping-cart"></i> Add to Cart</a></button>
-			  </div>
+			    <!-- <button class="btn btn-primary btn-sm add-to-cart" data-index="{{data.id}}" type="button" id="addToCartBtn"><i class="fa fa-shopping-cart"></i> Add to Cart</a></button> -->
+				<!-- <form>
+					{% csrf_token %}
+					<input hidden type="text" name='cart' value='{{product.id}}'>
+					<button type="submit" class="btn btn-outline-success"><i class='fas fa-cart-plus'></i> Add to cart</button>
+				</form> -->
+				<form action="/#{{product.id}}/" method="POST" class="btn-block">
+					{% csrf_token %}
+					<input hidden type="text" name='product' value='{{product.id}}'>
+					<input type="submit" onclick="updateCartCount()" class="float-right btn btn-success form-control" value="Add To Cart">
+				</form>
+			
+			</div>
 			</div>
 
 		</div>
@@ -192,4 +203,14 @@
 </script> -->
     
 
+{% endblock %}
+
+
+{% block scripts %}
+  <script>
+    function updateCartCount() {
+      var cartCount = document.getElementById("cart-count");
+      cartCount.innerHTML = parseInt(cartCount.innerHTML) + 1;
+    }
+  </script>
 {% endblock %}

@@ -8,7 +8,32 @@
           <button type="submit" class="btn btn-primary">Buyer</button>
         </div>
       </form>
+    {% if request.user.is_authenticated %}
+    <form method="get" action="{% url 'seller_admin' %}">
+      <button type="submit" class="btn btn-primary">Seller</button>
+    </form>
+    {% else %}
     <form method="get" action="{% url 'sell_signup' %}">
-    <button type="submit" class="btn btn-primary">Seller</button>
-    </div>
+      <button type="submit" class="btn btn-primary">Seller</button>
+    </form>
+    {% endif %}
+      <!-- {% if user.is_authenticated %}
+      {% if user.is_seller %}
+          {% url 'seller_admin' as seller_admin_url %}
+          <script>
+              window.location.href = "{{ seller_admin_url }}";
+          </script>
+      {% else %}
+          {% url 'store' as store_url %}
+          <script>
+              window.location.href = "{{ store_url }}";
+          </script>
+      {% endif %}
+  {% else %}
+      {% url 'sell_signup' as sell_signup_url %}
+      <script>
+          window.location.href = "{{ sell_signup_url }}";
+      </script>
+  {% endif %} -->
+
 {% endblock %}
