@@ -7,6 +7,7 @@ import re
 import datetime
 
 
+
 class Customer(models.Model):
     created_by = models.OneToOneField(User, related_name='customer', on_delete=models.CASCADE,)
     first_name = models.CharField(max_length=50)
@@ -50,6 +51,13 @@ class Customer(models.Model):
     
     def __str__(self):
         return self.first_name + " " + self.last_name
+    
+    # @staticmethod
+    # def create_customer_for_user(user):
+    #     customer = Customer(created_by=user)
+    #     customer.save()
+    #     return customer
+
 
 
 class Order(models.Model):
@@ -62,25 +70,27 @@ class Order(models.Model):
         (CANCELLED, 'Cancelled'),
     ]
 
+    address = models.CharField(max_length=255)
+    zipcode = models.CharField(max_length=5, default='')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     paid_amount = models.DecimalField(max_digits=8, decimal_places=2)
     # seller = models.ForeignKey(Seller, related_name="orders")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
+    
     @staticmethod
     def get_orders_by_customer(customer_id):
         return Order.objects.filter(customer=customer_id).order_by('-created_at')
 
+  
     def __str__(self):
         return self.customer.first_name
     
-class Payment(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    receipt = models.ImageField(upload_to='uploads/payment/')
 
-    def __str__(self):
-        return str(self.id)
+
+
+
     
 
 # class Payment(models.Model):

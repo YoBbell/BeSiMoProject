@@ -122,7 +122,13 @@ class OrderItem(models.Model):
     def get_orderitem_by_order(order_id):
         return OrderItem.objects.filter(order=order_id)
 
+class Payment(models.Model):
+    orderitem = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
+    receipt = models.ImageField(upload_to='uploads/payment/')
 
+    def __str__(self):
+        return str(self.id)
+    
 # class Item(models.Model):
 #     title = models.CharField(max_length=50)
 #     category = models.ForeignKey(Category, related_name='items', on_delete=models.CASCADE)

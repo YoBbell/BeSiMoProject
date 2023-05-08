@@ -163,6 +163,7 @@ def checkout(request):
 
         return redirect('orders')
 
+    return render(request, 'buyer_payment.html')
 
 # def checkout(request):
 #     if request.method == 'POST':
@@ -465,6 +466,7 @@ def signup(request):
 def edit_account(request):
     user = request.user
     customer = user.customer
+    
 
     if request.method == 'POST':
         # Update customer information
@@ -474,6 +476,8 @@ def edit_account(request):
         customer.email = request.POST.get('email')
         customer.address = request.POST.get('address')
         customer.zipcode = request.POST.get('zipcode')
+        
+
         
         # Validate input
         error_message = None
