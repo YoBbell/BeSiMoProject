@@ -163,7 +163,6 @@ def checkout(request):
 
         return redirect('orders')
 
-    return render(request, 'checkout.html')
 
 # def checkout(request):
 #     if request.method == 'POST':
@@ -393,6 +392,8 @@ def signup(request):
         phone = request.POST.get('phone')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        address = request.POST.get("address")
+        zipcode = request.POST.get("zipcode")
 
 
         try:
@@ -443,6 +444,8 @@ def signup(request):
                     password=password,
                     phone=phone,
                     email=email,
+                    address=address,
+                    zipcode=zipcode,
                     created_by=user )
             customer.save()
 
@@ -469,6 +472,8 @@ def edit_account(request):
         customer.last_name = request.POST.get('last_name')
         customer.phone = request.POST.get('phone')
         customer.email = request.POST.get('email')
+        customer.address = request.POST.get('address')
+        customer.zipcode = request.POST.get('zipcode')
         
         # Validate input
         error_message = None
@@ -524,6 +529,71 @@ def brand_product_list(request,seller_id):
 			'data':data,
 			})
 
+
+
+def buyer_payment(request, orderitem_id):
+    # Get the current order item
+    orderitem = OrderItem.objects.get(pk=orderitem_id)
+    customer = orderitem.order.customer
+
+    if request.method == 'POST':
+        # Process payment and create Payment object
+        receipt = request.FILES.get('receipt')
+        if not receipt:
+            messages.error(request, 'Please upload a payment receipt')
+            return redirect('buyer_payment', orderitem_id=orderitem_id)
+        payment = Payment.objects.create(orderitem=orderitem, receipt=receipt)
+
+        # Update order status to completed
+        orderitem.order.status = Order.COMPLETED
+        orderitem.order.save()
+
+        messages.success(request, 'Payment confirmed. Thank you for your purchase!')
+        return redirect('homepage')
+
+    # Render template with seller, customer, and order info
+    context = {
+        'seller_name': orderitem.product.seller.store_name,
+        'seller_location': orderitem.product.seller.location,
+        'seller_qr_image': orderitem.product.seller.qr_image,
+
+        'customer_first_name': orderitem.order.customer.first_name,
+        'customer_last_name': orderitem.order.customer.last_name,
+        'customer_phone': orderitem.order.customer.phone,
+
+        'order_item_product_name': orderitem.product.name,
+        'order_item_quantity': orderitem.quantity,
+        'order_item_price': orderitem.product.price,
+        'order_item_total_price': orderitem.get_total_price()
+        
+    }
+    return render(request, 'buyer_payment.html', context)
+
+
+# def payment_confirm(request, payment_id):
+#     payment = get_object_or_404(Payment, id=payment_id)
+
+#     context = {
+#         'seller_info': {
+#             'store_name': payment.seller.store_name,
+#             'location': payment.seller.location,
+#             'qr_code_photo': payment.seller.qr_image.url
+#         },
+#         'buyer_info': {
+#             'first_name': payment.customer.first_name,
+#             'last_name': payment.customer.last_name,
+#             'phone': payment.customer.phone 
+#         },
+#         'order_item_details': {
+#             'product_name': payment.orderitem.product.name,
+#             'price': payment.orderitem.price,
+#             'quantity': payment.orderitem.quantity,
+#             'total_price': payment.orderitem.get_total_price()
+#         },
+#         'receipt': payment.receipt.url
+#     }
+
+#     return render(request, 'payment_confirm.html', context)
 # def auth_middleware(get_response):
 #     def middleware(request):
 #         if not request.session.get('customer_id'):
