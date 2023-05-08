@@ -16,10 +16,24 @@ from django.utils.datastructures import MultiValueDictKeyError
 @login_required(login_url='/login/')
 def cart(request):
     print(f"is_authen: {request.user.is_authenticated}")
-    if request.method == "GET":
-        ids = list(request.session.get('cart', {}).keys())
-        products = Products.get_products_by_id(ids)
+    # if request.method == "GET":
+    #     ids = list(request.session.get('cart', {}).keys())
+    #     products = Products.get_products_by_id(ids)
+    #     return render(request, 'cart.html', {'products': products})
+    if request.method == 'GET':
+        id = request.session.get('cart').keys()
+        products = []
+        if id:
+            id = [int(pdid) for pdid in id]
+            products = Products.get_products_by_id(id)
         return render(request, 'cart.html', {'products': products})
+    # if request.method == 'GET':
+    #     ids = request.session.get('cart').keys()
+    #     if ids:
+    #         products = Products.get_products_by_id(ids)
+    #     else:
+    #         products = []
+    #         return render(request, 'cart.html', {'products': products})
     elif request.method == "POST":
         product = request.POST.get('product')
         remove = request.POST.get('remove')

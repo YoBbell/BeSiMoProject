@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+
+<div class="container">
+   <div class="border rounded p-4 m-4">
+        <p class="display-4 pl-4 ml-4">Orders from Customer</p>
+        <hr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Image</th>
+                    <th>Order_ID</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for orderitem in orderitems %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><img style="height: 80px;" class="rounded-circle" src="{{orderitem.product.image.url}}" alt=""></td>
+                    <td>{{orderitem.order.id}}</td>
+                    <td>{{orderitem.order.customer.first_name}}</td>
+                    <td>{{orderitem.order.customer.phone}}</td>
+                    <td>{{orderitem.product.name}}</td>
+                    <td>{{orderitem.order.created_at}}</td>
+                    <td>{{orderitem.price|currency}}</td>
+                    <td>{{orderitem.quantity}}</td>
+                    <td>{{orderitem.quantity|multiply:orderitem.price|currency}}</td>
+                    <td>
+                        {% if orderitem.order.status == 'pending' %}
+                        <small class="badge badge-warning">Pending</small>
+                        {% elif orderitem.order.status == 'completed' %}
+                        <small class="badge badge-info">completed</small>
+                        {% elif orderitem.order.status == 'cancelled' %}
+                        <small class="badge badge-success">Cancelled</small>
+                        {% else %}
+                        <small class="badge badge-danger">{{ orderitem.order.status }}</small>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <form method="post" action="{% url 'update_order_status' orderitem.order.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="completed">
+                            <button type="submit" class="btn btn-success">Check</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'update_order_status' orderitem.order.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="cancelled">
+                            <button type="submit" class="btn btn-danger">Cancel</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                
+                  
+
+                {% endfor %}
+               
+            </tbody>
+
+        </table>
+       
+   </div>
+</div>
+
+
+
+
+
+{% endblock %}
