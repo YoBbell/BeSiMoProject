@@ -56,7 +56,11 @@
 
 
 
-      <ul class=" navbar-nav my-2 my-lg-0">
+        <ul class=" navbar-nav my-2 my-lg-0">
+
+          <li class="nav-item active">
+            <a class="nav-link" href="/sell_edit_account/">Profile <span class="sr-only">(current)</span></a>
+          </li>
 
         <!-- <li class="nav-item active">
           <a class="nav-link" href="/cart">Cart 
@@ -66,9 +70,7 @@
 
         {% if request.session.customer %}
         
-        <li class="nav-item active ">
-          <a class="nav-link" href="/orders">Orders<span class="sr-only">(current)</span></a>
-        </li>
+     
         <li class="nav-item active ">
           <a class="nav-link" href="/logout">Logout<span class="sr-only">(current)</span></a>
         </li>
