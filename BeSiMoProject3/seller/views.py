@@ -251,7 +251,7 @@ def sell_logout(request):
 #     return render(request, 'sell_edit_account.html', {'seller': request.user.seller})
 
 
-
+@login_required(login_url='/sell_login/')
 def sell_edit_account(request):
     # Get seller by email
     
