@@ -23,12 +23,12 @@
             </thead>
             <tbody>
                 
-                {% for orderit in orderitem %}
+                {% for orderitem in orderitems %}
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <td><img style="height: 80px;" class="rounded-circle" src="{{orderitem.product.image.url}}" alt=""></td>
                     <td>{{orderitem.product.name}}</td>
-                    <td>{{order.created_at}}</td>
+                    <td>{{orderitem.order.created_at}}</td>
                     <td>{{orderitem.price|currency}}</td>
                     <td>{{orderitem.quantity}}</td>
                     <td>{{orderitem.quantity|multiply:orderitem.price|currency}}</td>
@@ -37,9 +37,9 @@
                     {%else%}
                     <td><small class="badge badge-warning">Pending</small></td>
                     {% endif %} -->
-                    {% if order.status == 'completed' %}
+                    {% if orderitem.order.status == 'completed' %}
                     <td><small class="badge badge-success">Completed</small></td>
-                    {% elif order.status == 'cancelled' %}
+                    {% elif orderitem.order.status == 'cancelled' %}
                     <td><small class="badge badge-danger">Cancelled</small></td>
                     {% else %}
                     <td><small class="badge badge-warning">Pending</small></td>

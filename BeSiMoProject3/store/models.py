@@ -70,7 +70,7 @@ class Order(models.Model):
 
     @staticmethod
     def get_orders_by_customer(customer_id):
-        return Order.objects.filter(customer_id=customer_id).order_by('-created_at')
+        return Order.objects.filter(customer=customer_id).order_by('-created_at')
 
     def __str__(self):
         return self.customer.first_name
