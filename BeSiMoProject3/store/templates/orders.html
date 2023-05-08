@@ -34,11 +34,7 @@
                     <td>{{orderitem.quantity}}</td>
                     <td>{{orderitem.quantity|multiply:orderitem.price|currency}}</td>
                     
-                    <!-- {% if order.status %}
-                    <td><small class="badge badge-success">Completed</small></td>
-                    {%else%}
-                    <td><small class="badge badge-warning">Pending</small></td>
-                    {% endif %} -->
+                  
                     {% if orderitem.order.status == 'completed' %}
                     <td><small class="badge badge-success">Completed</small></td>
                     {% elif orderitem.order.status == 'in_process' %}
@@ -48,8 +44,13 @@
                     {% else %}
                     <td><small class="badge badge-warning">Pending</small></td>
                     {% endif %}
-                    <td><a href="{% url 'buyer_payment' orderitem_id=orderitem.id %}" class="btn btn-outline-success">Pay now</a>
-                    </td>
+
+                    {% if orderitem.order.status == 'in_process' %}
+                        <td><a href="{% url 'receipt' orderitem_id=orderitem.payment.id %}" class="btn btn-primary">Receipt</a></td>
+                    {% else %}
+                        <td><a href="{% url 'buyer_payment' orderitem_id=orderitem.id %}" class="btn btn-outline-success">Pay Now</a></td>
+                    {% endif %}
+
                 </tr>
 
               

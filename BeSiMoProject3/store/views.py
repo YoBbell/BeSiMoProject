@@ -592,30 +592,37 @@ def buyer_payment(request, orderitem_id):
     return render(request, 'buyer_payment.html', context)
 
 
-# def payment_confirm(request, payment_id):
-#     payment = get_object_or_404(Payment, id=payment_id)
+def receipt(request, orderitem_id):
 
-#     context = {
-#         'seller_info': {
-#             'store_name': payment.seller.store_name,
-#             'location': payment.seller.location,
-#             'qr_code_photo': payment.seller.qr_image.url
-#         },
-#         'buyer_info': {
-#             'first_name': payment.customer.first_name,
-#             'last_name': payment.customer.last_name,
-#             'phone': payment.customer.phone 
-#         },
-#         'order_item_details': {
-#             'product_name': payment.orderitem.product.name,
-#             'price': payment.orderitem.price,
-#             'quantity': payment.orderitem.quantity,
-#             'total_price': payment.orderitem.get_total_price()
-#         },
-#         'receipt': payment.receipt.url
-#     }
+    orderitem = OrderItem.objects.get(pk=orderitem_id)
+    customer = orderitem.order.customer
 
-#     return render(request, 'payment_confirm.html', context)
+    context = {
+        'seller_name': orderitem.product.seller.store_name,
+        'seller_location': orderitem.product.seller.location,
+        
+
+        'customer_first_name': customer.first_name,
+        'customer_last_name': customer.last_name,
+        'customer_phone': customer.phone,
+
+        'order_address' : orderitem.order.address,
+        'order_zipcode' : orderitem.order.zipcode,
+        
+        'payment_img' : orderitem.payment.receipt,
+        
+
+        'order_item_product_name': orderitem.product.name,
+        'order_item_quantity': orderitem.quantity,
+        'order_item_price': orderitem.product.price,
+        'order_item_total_price': orderitem.get_total_price()
+        
+    }
+
+    return render(request, 'receipt.html', context)
+
+
+
 # def auth_middleware(get_response):
 #     def middleware(request):
 #         if not request.session.get('customer_id'):

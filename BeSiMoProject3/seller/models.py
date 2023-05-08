@@ -104,11 +104,17 @@ class Products(models.Model):
     def __str__(self):
         return self.name
     
+class Payment(models.Model):
+    receipt = models.ImageField(upload_to='uploads/payment/')
 
-from store.models import Order
+    def __str__(self):
+        return str(self.id)
+    
+from store.models import *
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Products, related_name="items", on_delete=models.CASCADE)
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.IntegerField(default=1)
 
@@ -122,12 +128,7 @@ class OrderItem(models.Model):
     def get_orderitem_by_order(order_id):
         return OrderItem.objects.filter(order=order_id)
 
-class Payment(models.Model):
-    orderitem = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
-    receipt = models.ImageField(upload_to='uploads/payment/')
 
-    def __str__(self):
-        return str(self.id)
     
 # class Item(models.Model):
 #     title = models.CharField(max_length=50)
