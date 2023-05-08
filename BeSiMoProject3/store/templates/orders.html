@@ -19,6 +19,7 @@
                     <th>Quantity</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Payment</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,7 @@
                     <td>{{orderitem.price|currency}}</td>
                     <td>{{orderitem.quantity}}</td>
                     <td>{{orderitem.quantity|multiply:orderitem.price|currency}}</td>
+                    
                     <!-- {% if order.status %}
                     <td><small class="badge badge-success">Completed</small></td>
                     {%else%}
@@ -44,7 +46,11 @@
                     {% else %}
                     <td><small class="badge badge-warning">Pending</small></td>
                     {% endif %}
+                    <td><a href="{% url 'buyer_payment' orderitem_id=orderitem.id %}" class="btn btn-outline-success">Pay now</a>
+                    </td>
                 </tr>
+
+              
 
                 {% endfor %}
                

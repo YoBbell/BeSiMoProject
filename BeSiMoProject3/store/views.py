@@ -548,9 +548,22 @@ def buyer_payment(request, orderitem_id):
             return redirect('buyer_payment', orderitem_id=orderitem_id)
         payment = Payment.objects.create(orderitem=orderitem, receipt=receipt)
 
-        # Update order status to completed
-        orderitem.order.status = Order.COMPLETED
+
+        # Get address and zipcode from the form data
+        address = request.POST.get('address')
+        zipcode = request.POST.get('zipcode')
+
+        # Validate that the address field is not empty
+        if not address:
+            messages.error(request, 'Please enter a valid address')
+            return redirect('buyer_payment', orderitem_id=orderitem_id)
+
+        # Set the address and zipcode on the order
+        orderitem.order.address = address
+        orderitem.order.zipcode = zipcode
+
         orderitem.order.save()
+
 
         messages.success(request, 'Payment confirmed. Thank you for your purchase!')
         return redirect('homepage')
@@ -561,9 +574,11 @@ def buyer_payment(request, orderitem_id):
         'seller_location': orderitem.product.seller.location,
         'seller_qr_image': orderitem.product.seller.qr_image,
 
-        'customer_first_name': orderitem.order.customer.first_name,
-        'customer_last_name': orderitem.order.customer.last_name,
-        'customer_phone': orderitem.order.customer.phone,
+        'customer_first_name': customer.first_name,
+        'customer_last_name': customer.last_name,
+        'customer_phone': customer.phone,
+        'customer_address' : customer.address,
+        'customer_zipcode' : customer.zipcode,
 
         'order_item_product_name': orderitem.product.name,
         'order_item_quantity': orderitem.quantity,
