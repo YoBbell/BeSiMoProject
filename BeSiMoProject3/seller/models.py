@@ -118,6 +118,10 @@ class OrderItem(models.Model):
     def get_total_price(self):
         return self.price * self.quantity
 
+    @staticmethod
+    def get_orderitem_by_order(order_id):
+        return OrderItem.objects.filter(order=order_id)
+
 
 # class Item(models.Model):
 #     title = models.CharField(max_length=50)

@@ -44,39 +44,39 @@ def cart(request):
         request.session['cart'] = cart
         return redirect('cart/')
 
-@login_required(login_url='/login/')
-def checkout(request):
-    if request.method == 'POST':
-        address = request.POST.get('address')
-        phone = request.POST.get('phone')
-        customer_id = request.session.get('customer_id')
-        cart = request.session.get('cart')
-        products = Products.get_products_by_id(list(cart.keys()))
+# @login_required(login_url='/login/')
+# def checkout(request):
+#     if request.method == 'POST':
+#         address = request.POST.get('address')
+#         phone = request.POST.get('phone')
+#         customer_id = request.session.get('customer_id')
+#         cart = request.session.get('cart')
+#         products = Products.get_products_by_id(list(cart.keys()))
 
-        try:
-            customer = Customer.objects.get(id=customer_id)
-        except Customer.DoesNotExist:
-            return redirect('orders')
+#         try:
+#             customer = Customer.objects.get(id=customer_id)
+#         except Customer.DoesNotExist:
+#             return redirect('orders')
 
-        order = Order.objects.create(customer=customer, paid_amount=0)
+#         order = Order.objects.create(customer=customer, paid_amount=0)
 
-        for product in products:
-            order_item = OrderItem.objects.create(order=order,
-                                                  product=product,
-                                                  price=product.price,
-                                                  quantity=cart.get(str(product.id)))
-        order.paid_amount = OrderItem.get_total_price(order_item)
-        order.save()
-        request.session['cart'] = {}
+#         for product in products:
+#             order_item = OrderItem.objects.create(order=order,
+#                                                   product=product,
+#                                                   price=product.price,
+#                                                   quantity=cart.get(str(product.id)))
+#         order.paid_amount = OrderItem.get_total_price(order_item)
+#         order.save()
+#         request.session['cart'] = {}
 
-        return redirect('orders')
+#         return redirect('orders')
 
-    cart = request.session.get('cart')
-    if not cart:
-        return redirect('cart')
+#     cart = request.session.get('cart')
+#     if not cart:
+#         return redirect('cart')
 
-    products = Products.get_products_by_id(list(cart.keys()))
-    return render(request, 'checkout.html', {'products': products})
+#     products = Products.get_products_by_id(list(cart.keys()))
+#     return render(request, 'checkout.html', {'products': products})
 
 
 # def checkout(request):
@@ -132,38 +132,38 @@ def checkout(request):
 
 #     return render(request, 'checkout.html')
 
-# def checkout(request):
-#     if request.method == 'POST':
-#         address = request.POST.get('address')
-#         phone = request.POST.get('phone')
-#         customer_id = request.session.get('customer_id')
-#         cart = request.session.get('cart')
-#         products = Products.get_products_by_id(list(cart.keys()))
-#         customer = Customer.objects.get(id=customer_id)
-#         print(address, phone, customer_id, cart, products)
+def checkout(request):
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+        customer_id = request.session.get('customer_id')
+        cart = request.session.get('cart')
+        products = Products.get_products_by_id(list(cart.keys()))
+        customer = Customer.objects.get(id=customer_id)
+        print(address, phone, customer_id, cart, products)
 
-#         for product in products:
-#             print(cart.get(str(product.id)))
-#             order = Order.objects.create(
-#                 customer=customer,
-#                 paid_amount=product.price,
-#                 status=Order.PENDING,
-#             )
-#             order.save()
+        for product in products:
+            print(cart.get(str(product.id)))
+            order = Order.objects.create(
+                customer=customer,
+                paid_amount=product.price,
+                status=Order.PENDING,
+            )
+            order.save()
             
-#             order_item = OrderItem.objects.create(
-#                 order=order,
-#                 product=product,
-#                 price=product.price,
-#                 quantity=cart.get(str(product.id)),
-#             )
-#             order_item.save()
+            order_item = OrderItem.objects.create(
+                order=order,
+                product=product,
+                price=product.price,
+                quantity=cart.get(str(product.id)),
+            )
+            order_item.save()
             
-#         request.session['cart'] = {}
+        request.session['cart'] = {}
 
-#         return redirect('orders')
+        return redirect('orders')
 
-#     return render(request, 'checkout.html')
+    return render(request, 'checkout.html')
 
 # def checkout(request):
 #     if request.method == 'POST':
@@ -372,10 +372,15 @@ def logout(request):
 
 
 def orders(request):
-    customer = request.session.get('customer')
-    orders = Order.get_orders_by_customer(customer)
-    print(orders)
-    return render(request, 'orders.html', {'orders': orders})
+    customer_id = request.session.get('customer_id')
+    orders = Order.get_orders_by_customer(customer_id)
+    # orderitem = OrderItem.get_orderitem_by_order(orders.id)
+    # print(orderitem)
+    orderitems = []
+    for order in orders:
+        orderitems += OrderItem.objects.filter(order=order.id)
+    print(orderitems)
+    return render(request, 'orders.html', {'orderitems': orderitems})
 
 
 def signup(request):
