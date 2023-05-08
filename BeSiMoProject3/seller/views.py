@@ -467,41 +467,73 @@ def add_product_by_category(request, category_id):
 
 
 # ------------------------------------------------------------
-def seller_payment(request, orderitem_id):
-    # Get the current order item
-    orderitem = OrderItem.objects.get(pk=orderitem_id)
-    customer = orderitem.order.customer
+# def seller_payment(request, orderitem_id):
+#     # Get the current order item
+#     orderitem = OrderItem.objects.get(pk=orderitem_id)
+#     customer = orderitem.order.customer
 
-    if request.method == 'POST':
-        # Process payment and create Payment object
-        receipt = request.FILES.get('receipt')
-        if not receipt:
-            messages.error(request, 'Please upload a payment receipt')
-            return redirect('buyer_payment', orderitem_id=orderitem_id)
-        payment = Payment.objects.create(orderitem=orderitem, receipt=receipt)
+#     if request.method == 'POST':
+#         # Process payment and create Payment object
+#         receipt = request.FILES.get('receipt')
+#         if not receipt:
+#             messages.error(request, 'Please upload a payment receipt')
+#             return redirect('buyer_payment', orderitem_id=orderitem_id)
+#         payment = Payment.objects.create(orderitem=orderitem, receipt=receipt)
 
-        # Update order status to completed
-        orderitem.order.status = Order.COMPLETED
-        orderitem.order.save()
+#         # Update order status to completed
+#         orderitem.order.status = Order.COMPLETED
+#         orderitem.order.save()
 
-        messages.success(request, 'Payment confirmed. Thank you for your purchase!')
-        return redirect('homepage')
+#         messages.success(request, 'Payment confirmed. Thank you for your purchase!')
+#         return redirect('homepage')
 
-    # Render template with seller, customer, and order info
-    context = {
-        'seller_name': orderitem.product.seller.store_name,
-        'seller_location': orderitem.product.seller.location,
-        'seller_qr_image': orderitem.product.seller.qr_image,
+#     # Render template with seller, customer, and order info
+#     context = {
+#         'seller_name': orderitem.product.seller.store_name,
+#         'seller_location': orderitem.product.seller.location,
+#         'seller_qr_image': orderitem.product.seller.qr_image,
 
-        'customer_first_name': orderitem.order.customer.first_name,
-        'customer_last_name': orderitem.order.customer.last_name,
-        'customer_phone': orderitem.order.customer.phone,
+#         'customer_first_name': orderitem.order.customer.first_name,
+#         'customer_last_name': orderitem.order.customer.last_name,
+#         'customer_phone': orderitem.order.customer.phone,
 
-        'order_item_product_name': orderitem.product.name,
-        'order_item_quantity': orderitem.quantity,
-        'order_item_price': orderitem.product.price,
-        'order_item_total_price': orderitem.get_total_price()
+#         'order_item_product_name': orderitem.product.name,
+#         'order_item_quantity': orderitem.quantity,
+#         'order_item_price': orderitem.product.price,
+#         'order_item_total_price': orderitem.get_total_price()
         
-    }
-    return render(request, 'seller_payment.html', context)
+#     }
+#     return render(request, 'seller_payment.html', context)
 
+def seller_payment(request):
+    customer_id = request.session.get('customer_id')
+    orders = Order.get_orders_by_customer(customer_id)
+    # orderitem = OrderItem.get_orderitem_by_order(orders.id)
+    # print(orderitem)
+    orderitems = []
+    for order in orders:
+        orderitems += OrderItem.objects.filter(order=order.id)
+    print(orderitems)
+    return render(request, 'seller_payment.html', {'orderitems': orderitems})
+
+
+# def update_order_status(request, order_id):
+#     order = get_object_or_404(Order, id=order_id)
+#     if request.method == 'POST':
+#         order.status = request.POST.get('status')
+#         order.save()
+#         return redirect('seller_admin/')
+#     return render(request, 'update_order_status.html', {'order': order})
+
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        status = request.POST.get('status')  # get the status from the submitted form
+        if status == 'completed':
+            order.status = 'completed'
+            order.save()
+        elif status == 'cancelled':
+            order.status = 'cancelled'
+            order.save()
+        return redirect('/')  # or wherever you want to redirect after updating the order status
+    return render(request, 'update_order_status.html', {'order': order})

@@ -16,7 +16,8 @@ urlpatterns = [
     path('seller_admin/products/category/<int:category_id>/', views.sell_product_by_category, name='sell_product_by_category'),
     path('seller_admin/products/category/<int:category_id>/add_product/', views.add_product_by_category, name='add_product_by_category'),
     path('sell_delete_product/<int:product_id>', views.sell_delete_product, name='sell_delete_product'),
-    path('seller_payment/<int:orderitem_id>', views.seller_payment, name='seller_payment')
+    path('seller_payment/', views.seller_payment, name='seller_payment'),
+    path('seller_payment/<int:order_id>', views.update_order_status, name='update_order_status')
 
     # path('sell_product/', views.sell_product, name='sell_product'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
