@@ -178,6 +178,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 def sell_login(request):
+    print(f"is_authen: {request.user.is_authenticated}")
     error = None
     if request.method == 'POST':
         email = request.POST['email']
@@ -253,32 +254,34 @@ def sell_logout(request):
 
 @login_required(login_url='/sell_login/')
 def sell_edit_account(request):
+
     # Get seller by email
-    
+    # user = request.user
+    # seller = user.seller
     email = request.user.username
     seller = Seller.objects.get(email=email)
 
     if request.method == 'POST':
         # Get form data
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        store_name = request.POST['store_name']
-        phone = request.POST['phone']
-        location = request.POST['location']
+        seller.first_name = request.POST['first_name']
+        seller.last_name = request.POST['last_name']
+        seller.store_name = request.POST['store_name']
+        seller.phone = request.POST['phone']
+        seller.location = request.POST['location']
       
         
 
         # Validate input
         error_message = None
-        if len(first_name) < 3:
+        if len(seller.first_name) < 3:
             error_message = 'First Name must be 3 char long or more'
-        elif len(last_name) < 3:
+        elif len(seller.last_name) < 3:
             error_message = 'Last Name must be 3 char long or more'
-        elif len(phone) < 10:
+        elif len(seller.phone) < 10:
             error_message = 'Phone Number must be 10 char Long'
-        elif not re.match(r'^(\+66|0)\d{9}$',phone):
+        elif not re.match(r'^(\+66|0)\d{9}$', seller.phone):
             error_message ="Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
-        elif Seller.objects.filter(email=email).exclude(id=seller.id).exists():
+        elif Seller.objects.filter(email=seller.email).exclude(id=seller.id).exists():
             error_message = 'Email Address Already Registered..'
         else:
             # Update user
@@ -289,11 +292,11 @@ def sell_edit_account(request):
                 user.save()
 
             # Update seller
-            seller.first_name = first_name
-            seller.last_name = last_name
-            seller.store_name = store_name
-            seller.phone = phone
-            seller.location = location
+            first_name = first_name
+            last_name = last_name
+            store_name = store_name
+            phone = phone
+            location = location
 
             # Get password confirmation
             if request.FILES.get('store_image'):
@@ -310,7 +313,7 @@ def sell_edit_account(request):
                 messages.error(request, 'Failed to update account: {}'.format(e))
             return redirect('sell_edit_account')
 
-    return render(request, 'sell_edit_account.html', {'seller': request.user.seller})
+    return render(request, 'sell_edit_account.html', {'seller': seller})
 
 
 
