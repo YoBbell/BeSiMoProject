@@ -45,12 +45,18 @@
         </table>
         <hr>
         <div class="m-3 p-3">
-            <a href="orders" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-success border rounded  col-lg-3 float-right">Check out</a>
-        </div>
+            <!-- <a href="orders" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-success border rounded  col-lg-3 float-right">Check out</a> -->
+            <form action="/check-out/" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="submit" class="btn float-right btn-outline-success col-lg-6" value="Check out">
+              </div>
+            </form>
+          </div>
    </div>
 </div>
 
-{% endblock %} 
+
 <!-- modal -->
 
   <!-- Modal -->
@@ -75,12 +81,19 @@
                   <input type="text" name="receiver_name" id="" class="form-control" value="{{ request.user.customer.first_name }} {{ request.user.customer.last_name }}" placeholder="" aria-describedby="helpId">
                 </div>
                 <div class="form-group">
-                  <label for="">Address</label>
-                  <input type="text" name="address" id="" class="form-control" value="{{ request.user.customer.address }}" placeholder="" aria-describedby="helpId">
+                  <label for="">Address</label> -->
+                  <!-- <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId"> -->
+                  <!-- <input type="text" name="address" id="" class="form-control" value="{{ request.user.customer.address }}" placeholder="" aria-describedby="helpId">
                 </div>
                 <div class="form-group">
-                    <label for="">Phone</label>
-                    <input type="text" name="phone" id="" class="form-control" value="{{ request.user.customer.phone }}" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId">
+                  <label for="">Zip code</label> -->
+                  <!-- <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId"> -->
+                  <!-- <input type="text" name="zipcode" id="" class="form-control" value="{{ request.user.customer.zipcode }}" placeholder="" aria-describedby="helpId">
+                </div>
+                <div class="form-group">
+                    <label for="">Phone</label> -->
+                    <!-- <input type="text" name="phone" id="" class="form-control" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId"> -->
+                    <!-- <input type="text" name="phone" id="" class="form-control" value="{{ request.user.customer.phone }}" placeholder="0xxxxxxxxx or +66xxxxxxxxx" aria-describedby="helpId">
                 </div>
 
                   <input type="submit" class="btn float-right btn-outline-success col-lg-6" value="Check out">
@@ -90,7 +103,7 @@
         
       </div>
     </div>
-  </div>
+  </div> -->
 
-
+{% endblock %} 
 

@@ -163,7 +163,7 @@ def checkout(request):
 
         return redirect('orders')
 
-    return render(request, 'buyer_payment.html')
+    return render(request, 'checkout.html')
 
 # def checkout(request):
 #     if request.method == 'POST':
