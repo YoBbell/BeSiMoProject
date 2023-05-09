@@ -121,7 +121,7 @@ from store.models import *
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Products, related_name="items", on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE, default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.IntegerField(default=1)
 

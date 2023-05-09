@@ -46,7 +46,7 @@
                     {% endif %}
 
                     {% if orderitem.order.status == 'in_process' %}
-                        <td><a href="{% url 'receipt' orderitem_id=orderitem.payment.id %}" class="btn btn-primary">Receipt</a></td>
+                        <td><a href="{% url 'receipt' orderitem_id=orderitem.id %}" class="btn btn-primary">Receipt</a></td>
                     {% else %}
                         <td><a href="{% url 'buyer_payment' orderitem_id=orderitem.id %}" class="btn btn-outline-success">Pay Now</a></td>
                     {% endif %}
