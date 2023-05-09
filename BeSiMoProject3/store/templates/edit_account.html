@@ -2,16 +2,24 @@
 
 {% block content %}
   <h2>Edit Account</h2>
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    {% endfor %}
-  {% endif %}
+{% if messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <ul class="mb-0">
+      {% for message in messages %}
+        <!-- <li>{% if message.tags %}{{ message.tags }}{% endif %}</li> -->
+        <!-- <li>Account Updated Successfully</li> -->
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+
+
+
 
   <form method="POST" action="{% url 'edit_account' %}">
     {% csrf_token %}

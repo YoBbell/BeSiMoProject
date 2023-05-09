@@ -581,9 +581,8 @@ def buyer_payment(request, orderitem_id):
         orderitem.order.status = Order.IN_PROCESS
         orderitem.order.save()
 
+        messages.success(request, 'Payment confirmed. Thank you for your purchase!', extra_tags='success_payment')
 
-        messages.success(request, 'Payment confirmed. Thank you for your purchase!')
-        return redirect('homepage')
 
     # Render template with seller, customer, and order info
     context = {
