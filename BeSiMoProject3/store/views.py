@@ -534,6 +534,9 @@ def start(request):
 
 def product_detail(request, id):
     product = Products.objects.get(id=id)
+    seller = product.seller
+    if not seller.is_store_open():
+        return HttpResponse("Sorry, this {{seller.store_name}} is currently closed.")
     return render(request, "product_detail.html", {"data": product})
 
 def brand_list(request):

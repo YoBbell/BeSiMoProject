@@ -323,7 +323,7 @@ def sell_edit_account(request):
 #     seller = request.user.seller
 #     products = seller.products.all()
 #     categories = Category.get_all_categories()
-    # return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
+#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
 
 @login_required
 def seller_admin(request):
