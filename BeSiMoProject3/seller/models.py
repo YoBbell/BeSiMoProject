@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 import re
 from django.contrib.auth.models import User
 import datetime
+from django.utils import timezone
 
 class Seller(models.Model):
     created_by = models.OneToOneField(User, related_name='seller', on_delete=models.CASCADE,)
@@ -12,6 +13,8 @@ class Seller(models.Model):
     last_name = models.CharField(max_length=50)
     store_name = models.CharField(max_length=100, default='')
     password = models.CharField(max_length=100)
+    opening_time = models.TimeField(default=timezone.now().replace(hour=9, minute=0, second=0))
+    closing_time = models.TimeField(default=timezone.now().replace(hour=22, minute=0, second=0))
     
     phone_regex = RegexValidator(
         regex=r'^(\+66|0)\d{9}$',
@@ -29,10 +32,23 @@ class Seller(models.Model):
         if not self.email_regex.match(self.email):
             raise ValidationError({'email': 'Email must be in the format: \'xxxxxxxxxx@student.chula.ac.th\''})
 
-  
+
     def register(self):
         self.save()
 
+
+    def is_store_open(self):
+        now = timezone.now().time()
+        if self.opening_time <= now < self.closing_time:
+            return True
+        else:
+            return False
+    
+    def get_store_status(self):
+        if self.is_store_open():
+            return "Open"
+        else:
+            return "Closed"
 
     @staticmethod
     def get_seller_by_email(email):
