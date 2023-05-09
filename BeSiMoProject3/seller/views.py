@@ -1,3 +1,4 @@
+from itertools import product
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from django.contrib.auth.hashers import make_password,  check_password
 from seller.models import *
@@ -317,13 +318,20 @@ def sell_edit_account(request):
 
 
 
+# @login_required
+# def seller_admin(request):
+#     seller = request.user.seller
+#     products = seller.products.all()
+#     categories = Category.get_all_categories()
+    # return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
+
 @login_required
 def seller_admin(request):
-    seller = request.user.seller
-    products = seller.products.all()
+    seller =Seller.objects.all()
     categories = Category.get_all_categories()
+    # products = Products.objects.all()
+    products = Products.objects.all()
     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
-
 
 @login_required
 def add_product(request):
