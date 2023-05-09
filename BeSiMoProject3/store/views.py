@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import MultiValueDictKeyError
+from django.db.models import Q
 
 
 @login_required(login_url='/login/')
@@ -634,6 +635,54 @@ def receipt(request, orderitem_id):
 
     return render(request, 'receipt.html', context)
 
+
+
+
+
+# def product_search(request):
+#     query = request.GET.get('q')
+#     if query:
+#         products = Products.objects.filter(
+#             Q(name__icontains=query) |
+#             Q(description__icontains=query)
+#         )
+#     else:
+#         products = Products.objects.all()
+#     context = {'products': products, 'query': query}
+#     return render(request, 'product_search.html', context)
+
+
+
+# from django.db.models import Q
+
+
+
+from django.db.models import Q
+
+def product_search(request):
+    query = request.GET.get('q')
+    if query:
+        products = Products.objects.filter(
+            Q(name__icontains=query) | Q(seller__store_name__icontains=query)
+        )
+    else:
+        products = Products.objects.all()
+
+    context = {'products': products, 'query': query}
+    return render(request, 'product_search.html', context)
+
+
+# def product_search(request):
+#     query = request.GET.get('q')
+#     if query:
+#         products = Products.objects.filter(
+#             Q(name__icontains=query)
+#         )
+#     else:
+#         products = Products.objects.all()
+
+#     context = {'products': products, 'query': query}
+#     return render(request, 'product_search.html', context)
 
 
 # def auth_middleware(get_response):

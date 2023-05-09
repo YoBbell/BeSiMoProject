@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load cart %}
+    {% load custom_filter %}
+
+    <div id='products' class="col-lg-9 mx-auto">
+        <div class="row mx-auto">
+            {% for product in products %}
+                <div class="card mx-auto mb-3" id="{{ product.id }}" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-title"><a href="/product/{{ product.id }}"><b>{{ product.name }}</b></a></p>
+                        <hr>
+                        <p class="card-text">Store: {{ product.seller.store_name }}</p>
+                        <p class="card-text">{{ product.location }}</p>
+                        <hr>
+                        <p class="card-text"><bk>{{ product.price }} Baht</b></p>
+                    </div>
+                    <form action="/#{{ product.id }}/" method="POST" class="btn-block">
+                        {% csrf_token %}
+                        <input hidden type="text" name='product' value='{{ product.id }}'>
+                        <input type="submit" class="float-right btn btn-success form-control" value="Add To Cart">
+                    </form>
+                </div>
+            {% empty %}
+                <p>No products found.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+

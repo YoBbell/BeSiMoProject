@@ -89,25 +89,28 @@ from .models import Products
 
 
 from django.utils.datastructures import MultiValueDictKeyError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from .models import Seller
 
 def sell_signup(request):
     if request.method == 'POST':
         # Get form data
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        store_name = request.POST['store_name']
-        password = request.POST['password']
-        phone = request.POST['phone']
-        email = request.POST['email']
-        location = request.POST['location']
-        store_image = request.FILES['store_image']
-        qr_image = request.FILES['qr_image']
-
-        # Get password confirmation
         try:
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            store_name = request.POST['store_name']
+            password = request.POST['password']
+            phone = request.POST['phone']
+            email = request.POST['email']
+            location = request.POST['location']
+            store_image = request.FILES['store_image']
+            qr_image = request.FILES['qr_image']
             password_confirm = request.POST['password_confirm']
         except MultiValueDictKeyError:
-            error_message = 'Please confirm your password'
+            error_message = 'Please fill out all the fields'
             data = {
                 'error': error_message,
                 'values': request.POST
@@ -126,8 +129,8 @@ def sell_signup(request):
             error_message = 'Last Name must be 3 char long or more'
         elif len(phone) < 10:
             error_message = 'Phone Number must be 10 char Long'
-        elif not re.match(r'^(\+66|0)\d{9}$',phone):
-            error_message ="Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
+        elif not re.match(r'^(\+66|0)\d{9}$', phone):
+            error_message = "Phone number must be in the format '0xxxxxxxxx' or '+66xxxxxxxxx'"
         elif len(password) < 5:
             error_message = 'Password must be 5 char long'
         elif len(email) < 5:
@@ -147,16 +150,17 @@ def sell_signup(request):
 
             # Create seller
             seller = Seller.objects.create(
-                    first_name=first_name,
-                    last_name=last_name,
-                    store_name=store_name,
-                    password=password,
-                    phone=phone,
-                    email=email,
-                    location=location,
-                    store_image=store_image,
-                    qr_image=qr_image,
-                    created_by=user )
+                first_name=first_name,
+                last_name=last_name,
+                store_name=store_name,
+                password=password,
+                phone=phone,
+                email=email,
+                location=location,
+                store_image=store_image,
+                qr_image=qr_image,
+                created_by=user
+            )
             seller.save()
 
             return redirect('sell_login')
@@ -168,6 +172,14 @@ def sell_signup(request):
         return render(request, 'sell_signup.html', data)
 
     return render(request, 'sell_signup.html')
+
+
+@receiver(post_save, sender=User)
+def create_seller(sender, instance, created, **kwargs):
+    if created:
+        seller = Seller.objects.create(created_by=instance)
+        seller.save()
+
 
 
 

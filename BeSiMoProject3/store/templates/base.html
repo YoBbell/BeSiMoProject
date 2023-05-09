@@ -48,11 +48,30 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
+
         <li class="nav-item active">
           <a class="nav-link" href="/start/">Homepage <span class="sr-only">(current)</span></a>
         </li>
+
         <li class="nav-item active">
           <a class="nav-link" href="/brand_list/">Brand <span class="sr-only">(current)</span></a>
+        </li>
+
+       
+
+        <li class="nav-item active">
+    
+        <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'product_search' %}">
+          <div class="input-group">
+              <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search for a product..." aria-label="Search" style="max-width: 300px;">
+              <div class="input-group-append">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="background-color: #2a2a60; border-color: #404343;">
+                      <i class="fa fa-search"></i>
+                  </button>
+              </div>
+          </div>
+      </form>
+
         </li>
 
           </ul>
