@@ -666,7 +666,8 @@ def product_search(request):
     query = request.GET.get('q')
     if query:
         products = Products.objects.filter(
-            Q(name__icontains=query) | Q(seller__store_name__icontains=query)
+            Q(name__icontains=query) | Q(seller__store_name__icontains=query) 
+            | Q(price__icontains=query) | Q(category__name__icontains=query)
         )
     else:
         products = Products.objects.all()
