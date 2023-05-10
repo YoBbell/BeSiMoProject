@@ -14,7 +14,7 @@
 
   <style>
     nav{
-      background-color: green;
+      background-color: rgb(73, 73, 73);
     }
     .one-edge-shadow {
               box-shadow: 0 8px 2px -5px rgb(246, 245, 245);
@@ -35,20 +35,22 @@
   sticky-top navbar 
   navbar-expand-lg
   text-white">
-    <a class="navbar-brand ms-3 text-dark " href="/">
+    <a class="navbar-brand ms-3 text-white " href="/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
-    <img src="https://www.freepnglogos.com/uploads/shopping-cart-png/shopping-cart-svg-png-icon-download-28.png" style="width:50px;height:50px,color:text-light;">BESIMO(Seller)</a>
+    <img src="https://image.msscdn.net/display/images/common/2022/07/04/c8adfd26360b4eca97c2f4774c3f7710.png" style="width:80px;height:50px,color:text-light;"> BESIMO No.1 Fashion Store (Seller)</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
 
+
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="/start/">Homepage<span class="sr-only">(current)</span></a>
+          <a class="nav-link px-2 text-white" href="/start/">Homepage<span class="sr-only">(current)</span></a>
         </li>
 
           </ul>
@@ -60,21 +62,21 @@
         {% if request.user.is_authenticated %}
 
         <li class="nav-item active">
-          <a class="nav-link" href="/sell_edit_account/">Profile <span class="sr-only">(current)</span></a>
+          <a class="nav-link px-2 text-white" href="/sell_edit_account/">Profile <span class="sr-only">(current)</span></a>
         </li>
 
         
         <li class="nav-item active ">
-          <a class="nav-link" href="/sell_logout/">Logout<span class="sr-only">(current)</span></a>
+          <a class="nav-link px-2 text-white" href="/sell_logout/">Logout<span class="sr-only">(current)</span></a>
         </li>
 
         {% else %}
       
         <li class="nav-item active">
-          <a class="nav-link" href="/sell_signup/">Signup<span class="sr-only">(current)</span></a>
+          <a class="nav-link px-2 text-white" href="/sell_signup/">Signup<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="/sell_login/">Login<span class="sr-only">(current)</span></a>
+          <a class="nav-link px-2 text-white" href="/sell_login/">Login<span class="sr-only">(current)</span></a>
         </li>
         {% endif %}
 

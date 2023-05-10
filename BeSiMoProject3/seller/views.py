@@ -338,40 +338,13 @@ def sell_edit_account(request):
     return render(request, 'sell_edit_account.html', {'seller': seller})
 
 
+
 @login_required(login_url='/sell_login/')
 def seller_admin(request):
     seller =Seller.objects.all()
     categories = Category.get_all_categories()
     products = Products.objects.filter(seller=request.user.seller)
     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
-
-# @login_required(login_url='/sell_login/')
-# def seller_admin(request):
-#     try:
-#         seller = Seller.objects.get(user=request.user)
-#     except ObjectDoesNotExist:
-#         return HttpResponse("Unauthorized", status=401)
-    
-#     categories = Category.get_all_categories()
-#     products = Products.objects.filter(seller=seller)
-#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
-
-
-# @login_required(login_url='/sell_login/')
-# def seller_admin(request):
-#     seller = Seller.objects.get(email=request.user.email)    
-#     categories = Category.get_all_categories()
-#     products = Products.objects.filter(seller=seller)
-#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
-
-
-# @login_required(login_url='/sell_login/')
-# def seller_admin(request):
-#     seller = Seller.objects.get(user__email=request.user.email)
-#     products = Products.objects.filter(seller=seller)
-#     categories = Category.get_all_categories()
-#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
-
 
 @login_required(login_url='/sell_login/')
 def add_product(request):
