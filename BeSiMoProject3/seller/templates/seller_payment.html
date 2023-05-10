@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'sell_base.html' %}
 
 
 {% block content %}
@@ -22,12 +22,13 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
+                    <th>Check</th>
+                    <th>Cancel</th>
                     <th>Status</th>
-                    <th>Payment</th>
+                    <th>Receipt</th>
                 </tr>
             </thead>
             <tbody>
-                
                 {% for orderitem in orderitems %}
                 <tr>
                     <td>{{forloop.counter}}</td>
@@ -40,18 +41,6 @@
                     <td>{{orderitem.price|currency}}</td>
                     <td>{{orderitem.quantity}}</td>
                     <td>{{orderitem.quantity|multiply:orderitem.price|currency}}</td>
-                    <td>
-                        {% if orderitem.order.status == 'pending' %}
-                        <small class="badge badge-warning">Pending</small>
-                        {% elif orderitem.order.status == 'completed' %}
-                        <small class="badge badge-info">completed</small>
-                        {% elif orderitem.order.status == 'cancelled' %}
-                        <small class="badge badge-success">Cancelled</small>
-                        {% else %}
-                        <small class="badge badge-danger">{{ orderitem.order.status }}</small>
-                        {% endif %}
-                    </td>
-
                     <td>
                         <form method="post" action="{% url 'update_order_status' orderitem.order.id %}">
                             {% csrf_token %}
@@ -66,6 +55,26 @@
                             <button type="submit" class="btn btn-danger">Cancel</button>
                         </form>
                     </td>
+
+                        {% if orderitem.order.status == 'completed' %}
+                        <td><small class="badge badge-success">Completed</small></td>
+                        <td>  
+                            <a href="{{ orderitem.payment.receipt.url }}" target="_blank">
+                                <img style="height: 80px;" src="{{ orderitem.payment.receipt.url }}" alt="">
+                            </a>
+                        </td>
+                        {% elif orderitem.order.status == 'in_process' %}
+                        <td><small class="badge badge-info">In_process</small></td>
+                        <td>
+                            <a href="{{ orderitem.payment.receipt.url }}" target="_blank">
+                                <img style="height: 80px;" src="{{ orderitem.payment.receipt.url }}" alt="">
+                            </a>
+                        </td>
+                        {% elif orderitem.order.status == 'cancelled' %}
+                        <td><small class="badge badge-danger">Cancelled</small></td>
+                        {% else %}
+                        <td><small class="badge badge-warning">Pending</small></td>
+                        {% endif %}
                     
                 </tr>
                 

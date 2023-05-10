@@ -7,9 +7,9 @@
     <h1 class="title"> Seller Admin - <span class="is-capitalized">{{user.seller.store_name}}</span></h1>
 
     <div class="box">
-    <div class="border rounded p-4 m-4">
-            <h2 class="is-size-3 mb-4">My Products</h2>
-
+    <div class="border rounded p-4 m-4">           
+            <h2 class="is-size-3 mb-4">My Products </h2>
+            
             <div class="buttons are-medium has-addons">
                 <a href="{% url 'seller_admin' %}" class="button is-primary{% if not category %} is-active{% endif %}">
                   <span class="btn btn-outline-success icon is-small"><i class="btn btn-outline-success fas fa-th-list"></i>  All Products </span>
@@ -20,12 +20,18 @@
                     <a href="{% url 'sell_product_by_category' category.id %}" class="button is-primary">
                       <span class="btn btn-outline-success icon is-small"><i class="btn btn-outline-success fas fa-tag"></i>  {{ category.name }} </span>
                     </a>
+                    
                   {% endif %}
-                {% endfor %}
+                {% endfor %}   
+                
               </div>
-              
-            
 
+              <div style="text-align: right;">
+                <a href="{% url 'seller_payment' %}" class="button is-success level-right">
+                  <button type="submit" class="btn btn-primary">Customer Order</button>
+                </a>
+              </div>  
+  
             <hr>
             <table class="table">
                 <thead>
@@ -63,7 +69,8 @@
                 </tbody>
 
             </table>
-            <hr>
+            </hr>
+
             <div class="m-3 p-3">
                 <a href="add_product/" class="btn btn-outline-success border rounded  col-lg-3 float-right">Add Products</a>
             </div>

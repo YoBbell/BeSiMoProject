@@ -1,39 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to my website!</title>
+    <style>
+      /* Center the image */
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+      }
+      /* Style the buttons */
+      .buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .btn {
+        padding: 10px 20px;
+        margin: 0 10px;
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+      .btn:hover {
+        background-color: #0062cc;
+      }
+      /* Dark button style */
+      .btn-dark {
+        background-color: #343a40;
+      }
+      .btn-dark:hover {
+        background-color: #23272b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+      <img src="https://image.msscdn.net/display/images/common/2022/07/04/c8adfd26360b4eca97c2f4774c3f7710.png" alt="Welcome Image">
+    </div>
 
-
-{% block content %}
-    <h1>Welcome to my website!</h1>
-    <p>Please select an option:</p>
-    <form method="get" action="{% url 'store' %}">
+    <div class="buttons">
+      <form method="get" action="{% url 'store' %}">
         <div class="buttons">
-          <button type="submit" class="btn btn-primary">Buyer</button>
+          <button type="submit" class="btn btn-dark">Buyer</button>
         </div>
       </form>
-    {% if request.user.is_authenticated %}
-    <form method="get" action="{% url 'seller_admin' %}">
-      <button type="submit" class="btn btn-primary">Seller</button>
-    </form>
+    {% if request.user.is_authenticated %}   
+      <form method="get" action="{% url 'seller_admin' %}">
+        <div class="buttons">
+          <button type="submit" class="btn btn-dark">Seller</button>
+        </div>
+      </form>
     {% else %}
-    <form method="get" action="{% url 'sell_signup' %}">
-      <button type="submit" class="btn btn-primary">Seller</button>
-    </form>
+      <form method="get" action="{% url 'sell_signup' %}">
+        <div class="buttons">
+          <button type="submit" class="btn btn-dark">Seller</button>
+        </div>
     {% endif %}
-      <!-- {% if user.is_authenticated %}
-      {% if user.is_seller %}
-          {% url 'seller_admin' as seller_admin_url %}
-          <script>
-              window.location.href = "{{ seller_admin_url }}";
-          </script>
-      {% else %}
-          {% url 'store' as store_url %}
-          <script>
-              window.location.href = "{{ store_url }}";
-          </script>
-      {% endif %}
-  {% else %}
-      {% url 'sell_signup' as sell_signup_url %}
-      <script>
-          window.location.href = "{{ sell_signup_url }}";
-      </script>
-  {% endif %} -->
-
-{% endblock %}
+    </div>
+  </body>
+</html>

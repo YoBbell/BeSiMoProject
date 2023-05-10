@@ -3,9 +3,12 @@ from django.core.validators import RegexValidator
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import re
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 import datetime
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+    
 
 class Seller(models.Model):
     created_by = models.OneToOneField(User, related_name='seller', on_delete=models.CASCADE,)
@@ -36,19 +39,36 @@ class Seller(models.Model):
     def register(self):
         self.save()
 
+    def is_closed(self):
+        now = timezone.localtime(timezone.now()).time()
+        print(now)
+        print(now < self.opening_time or now > self.closing_time)
+        return now < self.opening_time or now > self.closing_time
 
-    def is_store_open(self):
-        now = timezone.now().time()
-        if self.opening_time <= now < self.closing_time:
-            return True
-        else:
-            return False
+    # def is_store_open(self):
+    #     now = timezone.now().time()
+    #     if self.opening_time <= now < self.closing_time:
+    #         return True
+    #     else:
+    #         return False
     
-    def get_store_status(self):
-        if self.is_store_open():
-            return "Open"
-        else:
-            return "Closed"
+    # def get_store_status(self):
+    #     if self.is_store_open():
+    #         return "Open"
+    #     else:
+    #         return "Closed"
+
+    # def is_store_closed(self):
+    #     if not self.is_store_open():
+    #         return True
+    #     else:
+    #         return False
+
+    # def get_store_opening_time(self):
+    #     return self.opening_time.strftime("%I:%M %p")
+
+    # def get_store_closing_time(self):
+    #     return self.closing_time.strftime("%I:%M %p")
 
     @staticmethod
     def get_seller_by_email(email):
@@ -95,6 +115,7 @@ class Products(models.Model):
     added_date = models.DateTimeField(auto_now_add=True)
     image= models.ImageField(upload_to='uploads/products/')
     stockqty = models.IntegerField(default=999)
+    likes_count = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['-added_date']
