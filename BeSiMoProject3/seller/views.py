@@ -1,5 +1,5 @@
 from itertools import product
-from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.hashers import make_password,  check_password
 from seller.models import *
 from django.views import View
@@ -14,6 +14,7 @@ from django.contrib import messages
 from .forms import ProductForm
 from django.utils.text import slugify
 from .models import Products
+from django.core.exceptions import ObjectDoesNotExist
 
 
 
@@ -134,7 +135,7 @@ def sell_signup(request):
         elif len(email) < 5:
             error_message = 'Email must be 5 char long'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-            error_message = 'Email must be in the format: xxxxxxxxxx@student.chula.ac.th'
+            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif Seller.objects.filter(email=email).exists():
             error_message = 'Email Address Already Registered..'
         elif User.objects.filter(username=email).exists():
@@ -338,19 +339,11 @@ def sell_edit_account(request):
 
 
 
-# @login_required(login_url='/sell_login/')
-# def seller_admin(request):
-#     seller = request.user.seller
-#     products = seller.products.all()
-#     categories = Category.get_all_categories()
-#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
-
 @login_required(login_url='/sell_login/')
 def seller_admin(request):
     seller =Seller.objects.all()
     categories = Category.get_all_categories()
-    # products = Products.objects.all()
-    products = Products.objects.all()
+    products = Products.objects.filter(seller=request.user.seller)
     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
 
 @login_required(login_url='/sell_login/')

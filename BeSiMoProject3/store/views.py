@@ -228,7 +228,7 @@ def signup(request):
         elif len(email) < 5:
             error_message = 'Email must be 5 char long'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-            error_message = 'Email must be in the format: xxxxxxxxxx@student.chula.ac.th'
+            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif Customer.objects.filter(email=email).exists():
             error_message = 'Email Address Already Registered..'
         elif User.objects.filter(username=email).exists():

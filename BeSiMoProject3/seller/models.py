@@ -33,7 +33,7 @@ class Seller(models.Model):
 
     def clean(self):
         if not self.email_regex.match(self.email):
-            raise ValidationError({'email': 'Email must be in the format: \'xxxxxxxxxx@student.chula.ac.th\''})
+            raise ValidationError({'email': 'Email must be in the format: \'6xxxxxxxxx@student.chula.ac.th\''})
 
 
     def register(self):
