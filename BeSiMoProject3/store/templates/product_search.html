@@ -34,6 +34,10 @@
                         <hr>
                         <p class="card-text"><bk>{{ product.price }} Baht</b></p>
                     </div>
+                    {% if product.seller.is_closed %}
+						<!-- <p>Sorry, the store is currently closed. Please come back during opening hours.</p> -->
+						<button type="button" class="float-right btn btn-secondary form-control" disabled>Sorry, the store is currently closed.</button>
+      				{% else %} 
                     <form action="/#{{ product.id }}/" method="POST" class="btn-block">
                         {% csrf_token %}
                         <input hidden type="text" name='product' value='{{ product.id }}'>

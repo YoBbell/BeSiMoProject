@@ -102,6 +102,8 @@ def sell_signup(request):
         phone = request.POST['phone']
         email = request.POST['email']
         location = request.POST['location']
+        opening_time = request.POST["opening_time"]
+        closing_time = request.POST["closing_time"]
         store_image = request.FILES['store_image']
         qr_image = request.FILES['qr_image']
 
@@ -156,6 +158,8 @@ def sell_signup(request):
                     phone=phone,
                     email=email,
                     location=location,
+                    opening_time=opening_time,
+                    closing_time=closing_time,
                     store_image=store_image,
                     qr_image=qr_image,
                     created_by=user )
@@ -313,12 +317,17 @@ def sell_edit_account(request):
             store_name = request.POST['store_name']
             phone = request.POST['phone']
             location = request.POST['location']
+            opening_time = request.POST['opening_time']
+            closing_time = request.POST['closing_time']
 
             seller.first_name = first_name
+            seller.last_name = last_name
             seller.last_name = last_name
             seller.store_name = store_name
             seller.phone = phone
             seller.location = location
+            seller.opening_time = opening_time
+            seller.closing_time = closing_time
 
             # Get password confirmation
             if request.FILES.get('store_image'):

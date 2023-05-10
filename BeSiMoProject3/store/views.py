@@ -645,6 +645,11 @@ def receipt(request, orderitem_id):
     orderitem = OrderItem.objects.get(pk=orderitem_id)
     customer = orderitem.order.customer
 
+    try:
+        payment_img = orderitem.payment.receipt
+    except Payment.DoesNotExist:
+        payment_img = None
+
     context = {
         'seller_name': orderitem.product.seller.store_name,
         'seller_location': orderitem.product.seller.location,
@@ -657,7 +662,7 @@ def receipt(request, orderitem_id):
         'order_address' : orderitem.order.address,
         'order_zipcode' : orderitem.order.zipcode,
         
-        'payment_img' : orderitem.payment.receipt,
+        'payment_img' : payment_img,
         
 
         'order_item_product_name': orderitem.product.name,
