@@ -8,7 +8,7 @@
         <div class="row mx-auto">
 
         <!-- Filter -->
-        <div class="col-lg-3 mx-auto">
+        <div class="col-lg-3">
             <div class="list-group">
 
                 <a href="/" class="list-group-item list-group-item-action btn btn-outline-success">All Products</a>
@@ -23,29 +23,58 @@
             </div>
         </div>
 
+        
             {% for product in products %}
-                <div class="card mx-auto mb-3" id="{{ product.id }}" style="width: 18rem;">
-                    <img class="card-img-top" src="{{ product.image.url }}" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-title"><a href="/product/{{ product.id }}"><b>{{ product.name }}</b></a></p>
-                        <hr>
-                        <p class="card-text">Store: {{ product.seller.store_name }}</p>
-                        <p class="card-text">{{ product.location }}</p>
-                        <hr>
-                        <p class="card-text"><bk>{{ product.price }} Baht</b></p>
+            <div class="col-lg-3" id="{{ product.id }}" style="width: 18rem;">
+                <img class="card-img-top" src="{{ product.image.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-title"><a href="/product/{{ product.id }}"><b>{{ product.name }}</b></a></p>
+                    <hr>
+                    <p class="card-text">Store: {{ product.seller.store_name }}</p>
+                    <p class="card-text">{{ product.location }}</p>
+                    <hr>
+                    <p class="card-text"><b>{{ product.price }} Baht</b></p>
+                </div>
+                <div class="card-footer p-0 no-gutters">
+                    {% if product.seller.is_closed %}
+                    <button type="button" class="float-right btn btn-secondary form-control" disabled>Sorry, the store is currently closed.</button>
+                    {% else %}
+                    {% if request.session.cart and product|is_in_cart:request.session.cart %}
+                    <div class="row no-gutters">
+                        <form action="/#{{product.id}}/" class="col-2 " method="post">
+                            <form action="/#{{product.id}}/" method="POST" class="btn-block">
+                            {% csrf_token %}
+                            <input hidden type="text" name='product' value='{{product.id}}'>
+                            <input hidden type="text" name='remove' value='True'>
+                            <input type="submit" value=" - " class="btn btn-block btn-success border-right">
+                        </form>
+                        <div class="text-center col btn btn-success">{{product|cart_quantity:request.session.cart}} in Cart</div>
+                        <form action="/#{{product.id}}/" class="col-2 " method="post">
+                            {% csrf_token %}
+                            <input hidden type="text" name='product' value='{{product.id}}'>
+                            <input type="submit" value=" + " class="btn btn-block btn-success border-left">
+                        </form>
                     </div>
-                    <form action="/#{{ product.id }}/" method="POST" class="btn-block">
+                    {% else %}
+                    <form action="/#{{product.id}}/" method="POST" class="btn-block">
                         {% csrf_token %}
-                        <input hidden type="text" name='product' value='{{ product.id }}'>
+                        <input hidden type="text" name='product' value='{{product.id}}'>
                         <input type="submit" class="float-right btn btn-success form-control" value="Add To Cart">
                     </form>
+                    {% endif %}
+                    {% endif %}
                 </div>
+            </div>
             {% empty %}
-                <p>No products found.</p>
+            <div class="col-lg-12">
+                <h3 class="text-center">No products found.</h3>
+            </div>
             {% endfor %}
         </div>
-    </div>
-{% endblock %}
+        </div>
+        </div>
+        {% endblock %}
+        
 
 
 
