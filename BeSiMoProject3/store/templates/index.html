@@ -45,11 +45,12 @@
 					<div class="card-footer p-0 no-gutters">
 						{% if product.seller.is_closed %}
 						<!-- <p>Sorry, the store is currently closed. Please come back during opening hours.</p> -->
-						<button type="button" class="btn btn-secondary btn-sm" disabled>Sorry, the store is currently closed.</button>
-      					{% else %}
+						<button type="button" class="float-right btn btn-secondary form-control" disabled>Sorry, the store is currently closed.</button>
+      					{% else %} 
 							{% if request.session.cart and product|is_in_cart:request.session.cart %}
 							<div class="row no-gutters">
 								<form action="/#{{product.id}}/" class="col-2 " method="post">
+									<form action="/#{{product.id}}/" method="POST" class="btn-block">
 									{% csrf_token %}
 									<input hidden type="text" name='product' value='{{product.id}}'>
 									<input hidden type="text" name='remove' value='True'>
