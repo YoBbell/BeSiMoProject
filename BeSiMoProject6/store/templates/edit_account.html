@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Edit Account</h2>
+{% if messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <ul class="mb-0">
+      {% for message in messages %}
+        <!-- <li>{% if message.tags %}{{ message.tags }}{% endif %}</li> -->
+        <!-- <li>Account Updated Successfully</li> -->
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+
+
+
+
+  <form method="POST" action="{% url 'edit_account' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="first_name">First Name</label>
+      <input type="text" class="form-control" id="first_name" name="first_name" value="{{ customer.first_name }}">
+    </div>
+    <div class="form-group">
+      <label for="last_name">Last Name</label>
+      <input type="text" class="form-control" id="last_name" name="last_name" value="{{ customer.last_name }}">
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="text" class="form-control" id="phone" name="phone" value="{{ customer.phone }}">
+    </div>
+    <div class="form-group">
+        <label for="phone">Email</label>
+        <input type="text" class="form-control" id="email" name="email" value="{{ customer.email}}">
+      </div>
+    
+    <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" class="form-control" id="address" name="address" value="{{ customer.address}}">
+     </div>
+
+    <div class="form-group">
+        <label for="zipcode">Zipcode</label>
+        <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ customer.zipcode}}">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+{% endblock %}

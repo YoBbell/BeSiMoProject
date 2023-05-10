@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<main class="container my-4">
+	<!-- Featured Products -->
+	<h3 class="my-4 border-bottom pb-1">Brands</h3>
+	<div class="row">
+		{% if data %}
+			{% for store in data %}
+			<div class="col-md-3 mb-4">
+				<div class="card shadow">
+				<a href="/brand_product_list/{{store.id}}"><img src="{{store.store_image.url}}" class="card-img-top" alt="{{store.store_name}}" /></a>
+				<div class="card-body">
+					<h6 class="card-text"><a href="/brand_product_list/{{store.id}}">{{store.store_name}}</a></h6>
+				</div>
+				</div>
+			</div>
+			{% endfor %}
+		{% endif %}
+	</div>
+</main>
+{% endblock %}

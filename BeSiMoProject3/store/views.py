@@ -14,27 +14,65 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.db.models import Q
 
 
+# @login_required(login_url='/login/')
+# def cart(request):
+#     print(f"is_authen: {request.user.is_authenticated}")
+#     # if request.method == "GET":
+#     #     ids = list(request.session.get('cart', {}).keys())
+#     #     products = Products.get_products_by_id(ids)
+#     #     return render(request, 'cart.html', {'products': products})
+#     if request.method == 'GET':
+#         id = request.session.get('cart')
+#         products = []
+#         if id:
+#             id = [int(pdid) for pdid in id]
+#             products = Products.get_products_by_id(id)
+#         return render(request, 'cart.html', {'products': products})
+#     # if request.method == 'GET':
+#     #     ids = request.session.get('cart').keys()
+#     #     if ids:
+#     #         products = Products.get_products_by_id(ids)
+#     #     else:
+#     #         products = []
+#     #         return render(request, 'cart.html', {'products': products})
+#     elif request.method == "POST":
+#         product = request.POST.get('product')
+#         remove = request.POST.get('remove')
+#         cart = request.session.get('cart', {})
+
+#         if cart:
+#             quantity = cart.get(product)
+#             if quantity:
+#                 if remove:
+#                     if quantity <= 1:
+#                         cart.pop(product)
+#                     else:
+#                         cart[product] = quantity-1
+#                 else:
+#                     cart[product] = quantity+1
+#             else:
+#                 cart[product] = 1
+#         else:
+#             cart = {}
+#             cart[product] = 1
+
+#         request.session['cart'] = cart
+#         return redirect('cart/')
+
 @login_required(login_url='/login/')
 def cart(request):
     print(f"is_authen: {request.user.is_authenticated}")
-    # if request.method == "GET":
-    #     ids = list(request.session.get('cart', {}).keys())
-    #     products = Products.get_products_by_id(ids)
-    #     return render(request, 'cart.html', {'products': products})
+    
     if request.method == 'GET':
-        id = request.session.get('cart').keys()
-        products = []
-        if id:
-            id = [int(pdid) for pdid in id]
-            products = Products.get_products_by_id(id)
+        cart = request.session.get('cart')
+        if cart:
+            ids = cart.keys()
+            ids = [int(pdid) for pdid in ids]
+            products = Products.get_products_by_id(ids)
+        else:
+            products = []
         return render(request, 'cart.html', {'products': products})
-    # if request.method == 'GET':
-    #     ids = request.session.get('cart').keys()
-    #     if ids:
-    #         products = Products.get_products_by_id(ids)
-    #     else:
-    #         products = []
-    #         return render(request, 'cart.html', {'products': products})
+    
     elif request.method == "POST":
         product = request.POST.get('product')
         remove = request.POST.get('remove')

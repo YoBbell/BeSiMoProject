@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+      
+    
+
+  <div class="card mt-3">
+    <div class="card-header">Customer Information</div>
+    <div class="card-body">
+        <div class="form-group row">
+            <label for="name" class="col-md-4 col-form-label text-md-right">Name:</label>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="name" value="{{ customer_first_name }} {{ customer_last_name }}" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="phone" class="col-md-4 col-form-label text-md-right">Phone Number:</label>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="phone" value="{{ customer_phone }} " readonly>
+            </div>
+        </div>
+      
+       
+    </div>
+</div>
+
+
+
+<div class="card mt-3">
+  <div class="card-header">Receiver Information</div>
+  <div class="card-body">
+      <div class="form-group row">
+          <label for="address " class="col-md-4 col-form-label text-md-right">Address:</label>
+          <div class="col-md-6">
+              <input type="text" class="form-control" id="address"  value="{{ order_address }}" readonly>
+          </div>
+      </div>
+      <div class="form-group row">
+          <label for="zipcode " class="col-md-4 col-form-label text-md-right">Zipcode:</label>
+          <div class="col-md-6">
+              <input type="text" class="form-control" id="zipcode " value="{{ order_zipcode }} " readonly>
+          </div>
+      </div>
+    
+      </div>
+  
+</div>
+
+
+<div class="card mt-3">
+    <div class="card-header">Seller Information</div>
+    <div class="card-body">
+        <div class="form-group row">
+            <label for="name" class="col-md-4 col-form-label text-md-right">Name:</label>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="name" value="{{ seller_name }}" readonly>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="location" class="col-md-4 col-form-label text-md-right">Location:</label>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="location" value="{{ seller_location }} " readonly>
+            </div>
+        </div>
+      
+      
+    </div>
+</div>
+
+
+<div class="card mt-3">
+  <div class="card-header">Summary Order Details</div>
+  <div class="card-body">
+      <div class="form-group row">
+          <label for="name" class="col-md-4 col-form-label text-md-right">Product Name:</label>
+          <div class="col-md-6">
+              <input type="text" class="form-control" id="name"  value="{{ order_item_product_name }}" readonly>
+          </div>
+      </div>
+      <div class="form-group row">
+          <label for="quantity " class="col-md-4 col-form-label text-md-right">Quantity:</label>
+          <div class="col-md-6">
+              <input type="text" class="form-control" id="quantity " value="{{ order_item_quantity }}" readonly>
+          </div>
+      </div>
+      <div class="form-group row">
+        <label for="price " class="col-md-4 col-form-label text-md-right">Price:</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control" id="price"  value="{{ order_item_price }}" readonly>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="price " class="col-md-4 col-form-label text-md-right">Total Price:</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control" id="price " value="{{ order_item_total_price }} " readonly>
+        </div>
+    </div>
+    
+    </div>
+</div>
+
+
+<div class="card mt-3 mx-auto" style="max-width: 500px;">
+    <div class="card-header">Payment Receipt</div>
+    <div class="card-body">
+      <div class="form-group row justify-content-center">
+        <img src="{{ payment_img.url }}" alt="Payment Receipt" style="max-width: 100%; height: auto;">
+      </div>
+    </div>
+</div>
+
+
+</form>
+</div>
+</div>
+</div>
+           
+
+
+  
+                
+{% endblock %}

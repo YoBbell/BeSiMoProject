@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <ul class="mb-0">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+    {% endif %}
+
+
+
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="card mt-3">
+                <div class="card-header">{{ customer_first_name }} {{ customer_last_name }}'s Details</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label text-md-right">Name:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="name" value="{{ customer_first_name }} {{ customer_last_name }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="phone" class="col-md-4 col-form-label text-md-right">Phone:</label>
+                        <div class="col-md-6">
+                            <input type="tel" class="form-control" id="phone" value="{{ customer_phone }} " readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="address" class="col-md-4 col-form-label text-md-right">Address:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="address" name="address" value="{{ customer_address }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="zipcode" class="col-md-4 col-form-label text-md-right">Zipcode:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ customer_zipcode }}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">{{ seller_name }} 's Details</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label text-md-right">Name:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="name" value="{{ seller_name }} " readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="location" class="col-md-4 col-form-label text-md-right">Location:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="location" value="{{ seller_location}} " readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="qr_image" class="col-md-4 col-form-label text-md-right">QR Code Payment:</label>
+                        <div class="col-md-6">
+                            <input type="image" class="form-control" id="qr_image" src="{{ seller_qr_image.url }}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card mt-3">
+                <div class="card-header">Summary Order Details</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label text-md-right">Product Name:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="name"  value="{{ order_item_product_name }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="quantity " class="col-md-4 col-form-label text-md-right">Quantity:</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="quantity " value="{{ order_item_quantity }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="price " class="col-md-4 col-form-label text-md-right">Price:</label>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" id="price"  value="{{ order_item_price }}" readonly>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="price " class="col-md-4 col-form-label text-md-right">Total Price:</label>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" id="price " value="{{ order_item_total_price }} " readonly>
+                      </div>
+                  </div>
+                  
+                    </div>
+              </div>
+
+
+
+            <div class="card mt-3">
+                <div class="card-header">{{ seller_name }} Payment Details</div>
+                <div class="card-body">
+                    <form method="POST">
+                      {% csrf_token %}
+                      <div class="form-group row">
+                          <label for="receipt" class="col-md-4 col-form-label text-md-right">Payment Receipt:</label>
+                          <div class="col-md-6">
+                              <input type="file" class="form-control-file" id="receipt" name="receipt" accept="image/*">
+                              {% if request.FILES.receipt %}
+                                  <img src="{{ request.FILES.receipt.url }}" class="mt-3" style="max-height: 200px;">
+                              {% endif %}
+                          </div>
+                      </div>
+                      <div class="form-group row">
+                          <div class="col-md-6 offset-md-4">
+                              <button type="submit" class="btn btn-primary">Submit Payment</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+                                      
+{% endblock %}

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title style="color: rgb(227, 227, 227);">BESIMO(Buyer) Website</title>
+
+
+  <style>
+    nav{
+      background-color: rgb(73, 73, 73);
+    }
+    .one-edge-shadow {
+              box-shadow: 0 8px 2px -5px rgb(246, 245, 245);
+}
+.display-8{
+  font-weight: 200;
+  font-size: 30px;
+  font-colour: $teal-200;
+}
+
+
+  </style>
+</head>
+
+<body>
+  <!-- navbar -->
+
+<nav class="one-edge-shadow
+  navbar navbar-light
+  sticky-top navbar 
+  navbar-expand-lg
+  text-white">
+    <a class="navbar-brand ms-3 text-white " href="/">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <img src="https://cafe24img.poxo.com/domba2/web/product/big/201905/855ec3b336934718294e4b25162ba921.jpg" style="width:100px;height:40px,color:text-light;"> BESIMO No.1 Fashion Store</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+
+        <li class="nav-item active">
+          <a class="nav-link px-2 text-white" href="/start/">Homepage <span class="sr-only">(current)</span></a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link px-2 text-white" href="/brand_list/">Brand <span class="sr-only">(current)</span></a>
+        </li>
+
+       
+
+        <li class="nav-item active">
+    
+        <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'product_search' %}">
+          <div class="input-group">
+              <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search for a product..." aria-label="Search" style="max-width: 300px;">
+              <div class="input-group-append">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="background-color: #d7dad8; border-color: #404343;">
+                      <i class="fa fa-search"></i>
+                  </button>
+              </div>
+          </div>
+      </form>
+
+        </li>
+
+          </ul>
+
+
+      <ul class=" navbar-nav my-2 my-lg-0">
+
+        <li class="nav-item active">
+          <!-- <a class="nav-link" href="/cart/">Cart 
+            <span class="badge badge-success">{{request.session.cart.keys|length}}</span>
+            <span class="sr-only">(current)</span></a> -->
+         
+
+          <a class="nav-link px-2 text-white" href="/cart/">
+            <i class="fa fa-shopping-cart"></i> Cart 
+            <span class="badge badge-success" id="cart-count">{{ request.session.cart.keys|length }}</span>
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+      
+
+        {% if request.session.customer_id %}
+
+        <li class="nav-item active">
+          <a class="nav-link px-2 text-white" href="/edit_account/">Profile <span class="sr-only">(current)</span></a>
+        </li>
+        
+        <li class="nav-item active ">
+          <a class="nav-link px-2 text-white" href="/orders/">Orders<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active ">
+          <a class="nav-link px-2 text-white" href="/logout/">Logout<span class="sr-only">(current)</span></a>
+        </li>
+        {% else %}
+
+        <li class="nav-item active">
+          <a class="nav-link px-2 text-white" href="/signup/">Signup<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link px-2 text-white" href="/login/">Login<span class="sr-only">(current)</span></a>
+        </li>
+        {% endif %}
+
+
+      </ul>
+
+
+    </div>
+  </nav>
+  <!---->
+  {% block content %}{% endblock %}
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+    <!-- <script src="https://unpkg.com/htmx.org@1.7.0"></script> -->
+</body>
+
+</html>

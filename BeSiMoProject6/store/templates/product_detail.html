@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<main class="container my-4">
+	<!-- Featured Products -->
+	<h3 class="my-4 border-bottom pb-1">{{data.name}}</h3>
+	<div class="row">
+		<!-- Images -->
+		<div class="col-md-4">
+			<img id="zoom_01" data-zoom-image="{{data.image.url}}" src="{{data.image.url}}" class="card-img-top" alt="{{data.name}}">
+		</div>
+		<div class="col-md-8">
+			<p>{{data.description}}</p>
+			<hr/>
+			<table class="table table-bordered">
+				
+                <tr>
+					<th>Size</th>
+					<th><span class="product-size">Free Size</span></th>
+				</tr>
+				<tr>
+					<th>Price</th>
+					<th>฿ <span class="product-price-{{data.id}}">{{data.price}}</span></th>
+				</tr>
+			</table>
+			<hr/>
+			<div class="input-group my-3" style="width:30%;">
+			  <div class="input-group-append">
+			  	<input type="hidden" class="product-image-{{data.id}}" value="{{data.productattribute_set.first.image}}" />
+		          <input type="hidden" class="product-id-{{data.id}}" value="{{data.id}}" />
+		          <input type="hidden" class="product-title-{{data.id}}" value="{{data.title}}" />
+			
+
+				<form class="add-to-cart-form" data-product-id="{{ data.id }}">
+					{% csrf_token %}
+					<input type="hidden" name="product_id" value="{{ data.id }}">
+					<div class="input-group my-3" style="width:30%;">
+						<input type="number" value="1" name="quantity" class="form-control" id="productQty" />
+						<div class="input-group-append">
+							{% if is_closed %}
+								<p>Sorry, the store is currently closed. Please come back during opening hours.</p>
+							{% else %}
+								<button type="submit" class="btn btn-success add-to-cart-btn"> 
+									<i class="fa fa-shopping-cart"></i> Add to Cart
+								</button>
+							{% endif %}
+						</div>
+					</div>
+				</form>
+			
+			</div>
+			</div>
+
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-md-6">
+			<h3 class="my-3">Detail</h3>
+			<!-- Detail -->
+			<table class="table table-bordered">
+				<tr>
+					<th>Brand</th>
+					<td><a href="/brand_product_list/{{data.seller.id}}">{{data.seller}}</a></td>
+				</tr>
+				<tr>
+					<th>Category</th>
+					<td><a href="/?category={{data.category.id}}">{{data.category}}</a></td>
+				</tr>
+				<tr>
+					<th>Location</th>
+					<td>{{data.seller.location}}</td>
+				</tr>
+			</table>
+		</div>
+		<!-- like -->
+		<!-- <div class="col-md-6">
+			<form method="POST" >
+				{% csrf_token %}
+				{% if product.is_liked %}
+					<button type="submit" name="like" value="unlike">Unlike</button>
+				{% else %}
+					<button type="submit" name="like" value="like">Like</button>
+				{% endif %}
+			</form>
+			
+			<p>Total likes: {{ product.likes_count }}</p>
+		</div> -->
+		<!-- Reviews -->
+		<div class="col-md-6">
+			<h3 class="my-3">Reviews - <span class="avg-rating">{{avg_reviews.avg_rating}}</span>/5 <i class="fa fa-star text-warning"></i>
+				{% if user.is_authenticated %}
+				{% if canAdd %}
+				<button data-toggle="modal" data-target="#productReview" type="button" class="btn btn-warning btn-sm float-right reviewBtn">Add Review</button>
+				{% endif %}
+				{% endif %}
+			</h3> 
+	{% if user.is_authenticated %} 
+	<!-- Product Review -->
+	<div class="modal fade" id="productReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Add Product Review</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	      	<form method="post" id="addForm" action="{% url 'save_review' data.id %}">
+	      		{% csrf_token %}
+		      	<table class="table table-bordered">
+		      		{{reviewForm.as_table}}
+		      		<tr>
+		      			<td colspan="2">
+		      				<button type="submit" class="btn btn-primary">Submit</button>
+		      				<input type="reset" class="btn btn-dark" value="Reset" id="reset" />
+		      			</td>
+		      		</tr>
+		      	</table>
+		      	<p class="ajaxRes"></p>
+	      </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Product Review End -->
+	{% endif %}
+			</h3>
+			<div class="card">
+				<div class="card-body review-list" style="max-height: 400px; overflow: auto;">
+					<!-- Detail -->
+					{% if reviews %}
+						{% for review in reviews %}
+						<blockquote class="blockquote text-right">
+						  <small>{{review.review_text}}</small>
+						  <footer class="blockquote-footer">{{review.user}} 
+						  	<cite title="Source Title">
+						  		{% for star in review.review_rating|ljust:review.review_rating %}
+						  		<i class="fa fa-star text-warning"></i>
+								{% endfor %}
+						  	</cite>
+						  </footer>
+						</blockquote>
+						<hr />
+						{% endfor %}
+					{% else %}
+						<p class="no-data">Add First Review</p>
+					{% endif %}
+				</div>
+			</div> 
+		</div> 
+	</div> 
+
+	<!-- Related Products -->
+	<div id='related-products' class="col-lg-9 mx-auto">
+		
+		<style>
+			.related-products-heading {
+				text-align: left;
+				margin-left: -160px;
+			}
+		</style>
+		<h2 class="related-products-heading">Related Products</h2>
+		<div class="row mx-auto">
+		{% for product in related_products %}
+		<div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
+			<img class="card-img-top" src="{{product.image.url}}" alt="{{product.name}}">
+			<div class="card-body">
+			<p class="card-title"><a href="/product/{{product.id}}"><b>{{product.name}}</b></a></p>
+			<hr>
+			<p class="card-text">Store: {{product.seller}}</p>
+			<p class="card-text">{{product.location}}</p>
+			<hr>
+			<p class="card-text"><b>{{product.price}} Baht</b></p>
+			
+			</div>
+			<form action="/#{{product.id}}/" method="POST" class="btn-block">
+			{% csrf_token %}
+			<input hidden type="text" name='product' value='{{product.id}}'>
+			<input type="submit" class="float-right btn btn-success form-control" value="Add To Cart">
+			</form>
+		</div>
+		{% empty %}
+		<p>No related products found.</p>
+		{% endfor %}
+		</div>
+	</div>
+
+	  
+</main>
+<!-- Image Zoom -->
+<script src="{% static 'jquery.ez-plus.js' %}"></script>
+<script type="text/javascript">
+    $('#zoom_01').ezPlus();
+</script>
+
+<!-- Add To Cart -->
+<script src="{% static 'custom.js' %}"></script>
+<!-- <script>
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    addToCartBtn.addEventListener('click', function() {
+        const productId = document.querySelector('.product-id-{{data.id}}').value;
+        const productQty = document.querySelector('.product-qty-{{data.id}}').value;
+        const productImage = document.querySelector('.product-image-{{data.id}}').value;
+        const productTitle = document.querySelector('.product-title-{{data.id}}').value;
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('product_qty', productQty);
+        formData.append('product_image', productImage);
+        formData.append('product_title', productTitle);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "cart" %}', true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                window.location.href = '{% url "cart" %}';
+            }
+        }
+        xhr.send(formData);
+    });
+</script> -->
+
+{% block scripts %}
+  <script>
+    function updateCartCount() {
+      var cartCount = document.getElementById("cart-count");
+      cartCount.innerHTML = parseInt(cartCount.innerHTML) + 1;
+    }
+  </script>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    // Get the opening and closing hours from the server
+    var openingTime = "{{ seller.opening_time|time:'H:i' }}";
+    var closingTime = "{{ seller.closing_time|time:'H:i' }}";
+
+    // Get the current time in the user's timezone
+    var now = new Date();
+
+    // Check if the store is closed
+    if (now.getHours() < parseInt(openingTime.split(':')[0]) || now.getHours() >= parseInt(closingTime.split(':')[0])) {
+        // Disable the add to cart button
+        document.getElementById("add-to-cart-btn").disabled = true;
+
+        // Add a tooltip to explain why the button is disabled
+        document.getElementById("add-to-cart-btn").title = "Sorry, the store is currently closed. Please come back during opening hours.";
+
+        // Change the text of the button to indicate that it is disabled
+        document.getElementById("add-to-cart-btn").innerHTML = "Store is closed";
+    }
+</script>
+{% endblock %}
+
+
+
+{% endblock %}
+
+

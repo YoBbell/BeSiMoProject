@@ -154,7 +154,7 @@ class Payment(models.Model):
     def __str__(self):
         return str(self.id)
     
-from store.models import *
+from store.models import Order
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Products, related_name="items", on_delete=models.CASCADE)
