@@ -1,5 +1,5 @@
 from itertools import product
-from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.hashers import make_password,  check_password
 from seller.models import *
 from django.views import View
@@ -14,6 +14,7 @@ from django.contrib import messages
 from .forms import ProductForm
 from django.utils.text import slugify
 from .models import Products
+from django.core.exceptions import ObjectDoesNotExist
 
 
 
@@ -134,7 +135,7 @@ def sell_signup(request):
         elif len(email) < 5:
             error_message = 'Email must be 5 char long'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-            error_message = 'Email must be in the format: xxxxxxxxxx@student.chula.ac.th'
+            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif Seller.objects.filter(email=email).exists():
             error_message = 'Email Address Already Registered..'
         elif User.objects.filter(username=email).exists():
@@ -264,11 +265,11 @@ def sell_edit_account(request):
 
     if request.method == 'POST':
         # Get form data
-        seller.first_name = request.POST['first_name']
-        seller.last_name = request.POST['last_name']
-        seller.store_name = request.POST['store_name']
-        seller.phone = request.POST['phone']
-        seller.location = request.POST['location']
+        # seller.first_name = request.POST['first_name']
+        # seller.last_name = request.POST['last_name']
+        # seller.store_name = request.POST['store_name']
+        # seller.phone = request.POST['phone']
+        # seller.location = request.POST['location']
       
         
 
@@ -287,17 +288,37 @@ def sell_edit_account(request):
         else:
             # Update user
             user = seller.created_by
+            # if user.is_authenticated:
+            #     user.first_name = first_name
+            #     user.last_name = last_name
+            #     user.save()
+
+            # # Update seller
+            # first_name = first_name
+            # last_name = last_name
+            # store_name = store_name
+            # phone = phone
+            # location = location
+
             if user.is_authenticated:
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
                 user.first_name = first_name
                 user.last_name = last_name
                 user.save()
 
             # Update seller
-            first_name = first_name
-            last_name = last_name
-            store_name = store_name
-            phone = phone
-            location = location
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            store_name = request.POST['store_name']
+            phone = request.POST['phone']
+            location = request.POST['location']
+
+            seller.first_name = first_name
+            seller.last_name = last_name
+            seller.store_name = store_name
+            seller.phone = phone
+            seller.location = location
 
             # Get password confirmation
             if request.FILES.get('store_image'):
@@ -317,23 +338,42 @@ def sell_edit_account(request):
     return render(request, 'sell_edit_account.html', {'seller': seller})
 
 
-
-# @login_required
-# def seller_admin(request):
-#     seller = request.user.seller
-#     products = seller.products.all()
-#     categories = Category.get_all_categories()
-#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
-
-@login_required
+@login_required(login_url='/sell_login/')
 def seller_admin(request):
     seller =Seller.objects.all()
     categories = Category.get_all_categories()
-    # products = Products.objects.all()
-    products = Products.objects.all()
+    products = Products.objects.filter(seller=request.user.seller)
     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories' : categories})
 
-@login_required
+# @login_required(login_url='/sell_login/')
+# def seller_admin(request):
+#     try:
+#         seller = Seller.objects.get(user=request.user)
+#     except ObjectDoesNotExist:
+#         return HttpResponse("Unauthorized", status=401)
+    
+#     categories = Category.get_all_categories()
+#     products = Products.objects.filter(seller=seller)
+#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
+
+
+# @login_required(login_url='/sell_login/')
+# def seller_admin(request):
+#     seller = Seller.objects.get(email=request.user.email)    
+#     categories = Category.get_all_categories()
+#     products = Products.objects.filter(seller=seller)
+#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
+
+
+# @login_required(login_url='/sell_login/')
+# def seller_admin(request):
+#     seller = Seller.objects.get(user__email=request.user.email)
+#     products = Products.objects.filter(seller=seller)
+#     categories = Category.get_all_categories()
+#     return render(request, 'seller_admin.html', {'seller': seller, 'products': products, 'categories': categories})
+
+
+@login_required(login_url='/sell_login/')
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -472,6 +512,31 @@ def add_product_by_category(request, category_id):
         form = ProductForm
 
         return render(request, 'add_product.html', {'form': form, 'category': category})
+    
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        status = request.POST.get('status')  # get the status from the submitted form
+        if status == 'completed':
+            order.status = 'completed'
+            order.save()
+        elif status == 'cancelled':
+            order.status = 'cancelled'
+            order.save()
+        return redirect('seller_payment')  # or wherever you want to redirect after updating the order status
+    return render(request, 'update_order_status.html', {'order': order})
+
+
+# def seller_payment(request):
+#     customer_id = request.session.get('customer_id')
+#     orders = Order.get_orders_by_customer(customer_id)
+#     # orderitem = OrderItem.get_orderitem_by_order(orders.id)
+#     # print(orderitem)
+#     orderitems = []
+#     for order in orders:
+#         orderitems += OrderItem.objects.filter(order=order.id)
+#     print(orderitems)
+#     return render(request, 'seller_payment.html', {'orderitems': orderitems})
 
 
 # ------------------------------------------------------------
@@ -543,5 +608,7 @@ def update_order_status(request, order_id):
         elif status == 'cancelled':
             order.status = 'cancelled'
             order.save()
-        return redirect('/')  # or wherever you want to redirect after updating the order status
+        return redirect('seller_payment')  
     return render(request, 'update_order_status.html', {'order': order})
+
+

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 import json
 from seller.models import *
 from store.models import *
-import datetime
+from datetime import datetime
 from django.contrib.auth.hashers import make_password,  check_password
 from django.views import  View
 from store.middlewares.auth import auth_middleware
@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import MultiValueDictKeyError
+from django.db.models import Q
 
 
 @login_required(login_url='/login/')
@@ -440,7 +441,7 @@ def signup(request):
         elif len(email) < 5:
             error_message = 'Email must be 5 char long'
         elif not re.match(r'^\d{10}\@student\.chula\.ac\.th$', email):
-            error_message = 'Email must be in the format: xxxxxxxxxx@student.chula.ac.th'
+            error_message = 'Email must be in the format: 6xxxxxxxxx@student.chula.ac.th'
         elif Customer.objects.filter(email=email).exists():
             error_message = 'Email Address Already Registered..'
         elif User.objects.filter(username=email).exists():
@@ -526,18 +527,39 @@ def edit_account(request):
     return render(request, 'edit_account.html', {'customer': customer})
 
 
-
-
-
 def start(request):
     return render(request, 'start.html')
 
+
 def product_detail(request, id):
-    product = Products.objects.get(id=id)
+    product = get_object_or_404(Products, id=id)
     seller = product.seller
-    if not seller.is_store_open():
-        return HttpResponse("Sorry, this {{seller.store_name}} is currently closed.")
-    return render(request, "product_detail.html", {"data": product})
+    if seller.is_closed():
+        return HttpResponse("Sorry, the store is currently closed. Please come back during opening hours.")
+    related_products = Products.objects.filter(category=product.category).exclude(id=id)
+    if request.method == 'POST':
+        if product.is_liked:
+            product.likes_count -= 1
+        else:
+            product.likes_count += 1
+        product.is_liked = not product.is_liked
+        product.save()
+    context = {
+        'data': product,
+        'related_products': related_products
+    }
+    return render(request, 'product_detail.html', context)
+
+
+# @login_required
+# def like_product(request, product_id):
+#     product = get_object_or_404(Products, id=product_id)
+#     if request.method == 'POST':
+#         product.likes_count += 1
+#         product.save()
+#     return redirect('product_detail', id=product_id)
+
+
 
 def brand_list(request):
     data=Seller.objects.all().order_by('-id')
@@ -550,6 +572,16 @@ def brand_product_list(request,seller_id):
 			'data':data,
 			})
 
+# def show_product(request):
+#     current_time = timezone.localtime(timezone.now()).time()
+#     seller = Seller.objects.filter(
+#         Q(opening_time__lte=current_time, closing_time__gte=current_time) | Q(opening_time__gte=F('close_time'), closing_time__lte=current_time)
+#     )
+
+#     products = Products.objects.filter(seller__in=seller)
+
+#     context = {'products': products}
+#     return render(request, 'product.html', context)
 
 
 def buyer_payment(request, orderitem_id):
@@ -585,7 +617,7 @@ def buyer_payment(request, orderitem_id):
         orderitem.order.save()
 
         messages.success(request, 'Payment confirmed. Thank you for your purchase!', extra_tags='success_payment')
-
+        return redirect('orders')
 
     # Render template with seller, customer, and order info
     context = {
@@ -636,6 +668,20 @@ def receipt(request, orderitem_id):
     }
 
     return render(request, 'receipt.html', context)
+
+
+def product_search(request):
+    query = request.GET.get('q')
+    if query:
+        products = Products.objects.filter(
+            Q(name__icontains=query) | Q(seller__store_name__icontains=query) 
+            | Q(price__icontains=query) | Q(category__name__icontains=query)
+        )
+    else:
+        products = Products.objects.all()
+
+    context = {'products': products, 'query': query}
+    return render(request, 'product_search.html', context)
 
 
 

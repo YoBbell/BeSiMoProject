@@ -51,10 +51,26 @@
 					<input hidden type="text" name='cart' value='{{product.id}}'>
 					<button type="submit" class="btn btn-outline-success"><i class='fas fa-cart-plus'></i> Add to cart</button>
 				</form> -->
-				<form action="/#{{product.id}}/" method="POST" class="btn-block">
+				<!-- <form action="/#{{product.id}}/" method="POST" class="btn-block">
 					{% csrf_token %}
 					<input hidden type="text" name='product' value='{{product.id}}'>
 					<input type="submit" onclick="updateCartCount()" class="float-right btn btn-success form-control" value="Add To Cart">
+				</form> -->
+				<form class="add-to-cart-form" data-product-id="{{ data.id }}">
+					{% csrf_token %}
+					<input type="hidden" name="product_id" value="{{ data.id }}">
+					<div class="input-group my-3" style="width:30%;">
+						<input type="number" value="1" name="quantity" class="form-control" id="productQty" />
+						<div class="input-group-append">
+							{% if is_closed %}
+								<p>Sorry, the store is currently closed. Please come back during opening hours.</p>
+							{% else %}
+								<button type="submit" class="btn btn-success add-to-cart-btn">
+									<i class="fa fa-shopping-cart"></i> Add to Cart
+								</button>
+							{% endif %}
+						</div>
+					</div>
 				</form>
 			
 			</div>
@@ -82,6 +98,19 @@
 				</tr>
 			</table>
 		</div>
+		<!-- like -->
+		<!-- <div class="col-md-6">
+			<form method="POST" >
+				{% csrf_token %}
+				{% if product.is_liked %}
+					<button type="submit" name="like" value="unlike">Unlike</button>
+				{% else %}
+					<button type="submit" name="like" value="like">Like</button>
+				{% endif %}
+			</form>
+			
+			<p>Total likes: {{ product.likes_count }}</p>
+		</div> -->
 		<!-- Reviews -->
 		<div class="col-md-6">
 			<h3 class="my-3">Reviews - <span class="avg-rating">{{avg_reviews.avg_rating}}</span>/5 <i class="fa fa-star text-warning"></i>
@@ -149,19 +178,38 @@
 	</div> 
 
 	<!-- Related Products -->
-	<div class="related-products">
-		<h2>Related Products</h2>
-		<div class="product-grid">
-		  <!-- Loop through the related products and display them -->
-		  {% for product in related_products %}
-			<div class="product-card">
-			  <img src="{{ product.image }}" alt="{{ product.name }}">
-			  <h3>{{ product.name }}</h3>
-			  <p>{{ product.price }}</p>
+	<div id='related-products' class="col-lg-9 mx-auto">
+		
+		<style>
+			.related-products-heading {
+				text-align: left;
+				margin-left: -160px;
+			}
+		</style>
+		<h2 class="related-products-heading">Related Products</h2>
+		<div class="row mx-auto">
+		{% for product in related_products %}
+		<div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
+			<img class="card-img-top" src="{{product.image.url}}" alt="{{product.name}}">
+			<div class="card-body">
+			<p class="card-title"><a href="/product/{{product.id}}"><b>{{product.name}}</b></a></p>
+			<hr>
+			<p class="card-text">Store: {{product.seller}}</p>
+			<p class="card-text">{{product.location}}</p>
+			<hr>
+			<p class="card-text"><b>{{product.price}} Baht</b></p>
 			</div>
-		  {% endfor %}
+			<form action="/#{{product.id}}/" method="POST" class="btn-block">
+			{% csrf_token %}
+			<input hidden type="text" name='product' value='{{product.id}}'>
+			<input type="submit" class="float-right btn btn-success form-control" value="Add To Cart">
+			</form>
 		</div>
-	  </div>
+		{% empty %}
+		<p>No related products found.</p>
+		{% endfor %}
+		</div>
+	</div>
 
 	  
 </main>
@@ -196,10 +244,6 @@
         xhr.send(formData);
     });
 </script> -->
-    
-
-{% endblock %}
-
 
 {% block scripts %}
   <script>
@@ -209,3 +253,32 @@
     }
   </script>
 {% endblock %}
+
+{% block javascript %}
+<script>
+    // Get the opening and closing hours from the server
+    var openingTime = "{{ seller.opening_time|time:'H:i' }}";
+    var closingTime = "{{ seller.closing_time|time:'H:i' }}";
+
+    // Get the current time in the user's timezone
+    var now = new Date();
+
+    // Check if the store is closed
+    if (now.getHours() < parseInt(openingTime.split(':')[0]) || now.getHours() >= parseInt(closingTime.split(':')[0])) {
+        // Disable the add to cart button
+        document.getElementById("add-to-cart-btn").disabled = true;
+
+        // Add a tooltip to explain why the button is disabled
+        document.getElementById("add-to-cart-btn").title = "Sorry, the store is currently closed. Please come back during opening hours.";
+
+        // Change the text of the button to indicate that it is disabled
+        document.getElementById("add-to-cart-btn").innerHTML = "Store is closed";
+    }
+</script>
+{% endblock %}
+
+
+
+{% endblock %}
+
+

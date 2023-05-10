@@ -38,7 +38,7 @@
                     {% if orderitem.order.status == 'completed' %}
                     <td><small class="badge badge-success">Completed</small></td>
                     {% elif orderitem.order.status == 'in_process' %}
-                    <td><small class="badge badge-danger">In_process</small></td>
+                    <td><small class="badge badge-info">In_process</small></td>
                     {% elif orderitem.order.status == 'cancelled' %}
                     <td><small class="badge badge-danger">Cancelled</small></td>
                     {% else %}
@@ -47,7 +47,7 @@
 
                     {% if orderitem.order.status == 'in_process' %}
                         <td><a href="{% url 'receipt' orderitem_id=orderitem.id %}" class="btn btn-primary">Receipt</a></td>
-                    {% else %}
+                    {% elif orderitem.order.status == 'pending' %}
                         <td><a href="{% url 'buyer_payment' orderitem_id=orderitem.id %}" class="btn btn-outline-success">Pay Now</a></td>
                     {% endif %}
 

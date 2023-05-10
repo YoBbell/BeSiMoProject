@@ -52,11 +52,6 @@ class Customer(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
     
-    # @staticmethod
-    # def create_customer_for_user(user):
-    #     customer = Customer(created_by=user)
-    #     customer.save()
-    #     return customer
 
 
 
